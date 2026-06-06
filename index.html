@@ -250,8 +250,8 @@
     .lock-body {
       min-width: 320px;
       display: grid;
-      grid-template-columns: repeat(var(--tile-count), minmax(44px, 1fr));
-      gap: 10px;
+      grid-template-rows: repeat(var(--tile-count), minmax(78px, auto));
+      gap: 14px;
       align-items: stretch;
       padding: 12px;
       border: 1px solid #5f574f;
@@ -262,13 +262,14 @@
 
     .tile-column {
       display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 8px;
+      grid-template-columns: 76px minmax(240px, 1fr) 94px;
+      gap: 12px;
+      align-items: center;
       min-width: 0;
     }
 
     .tile-label {
-      text-align: center;
+      text-align: right;
       font-size: 12px;
       color: var(--muted);
       font-weight: 700;
@@ -277,9 +278,9 @@
     .rail {
       position: relative;
       display: grid;
-      grid-template-rows: repeat(7, 34px);
-      gap: 5px;
-      padding: 8px;
+      grid-template-columns: repeat(7, minmax(36px, 1fr));
+      gap: 7px;
+      padding: 10px;
       border: 1px solid #443e36;
       border-radius: 8px;
       background: linear-gradient(180deg, #0e0d0c, #25221d);
@@ -288,11 +289,11 @@
     .rail::before {
       content: "";
       position: absolute;
-      top: 10px;
-      bottom: 10px;
-      left: 50%;
-      width: 4px;
-      transform: translateX(-50%);
+      top: 50%;
+      left: 12px;
+      right: 12px;
+      height: 5px;
+      transform: translateY(-50%);
       border-radius: 999px;
       background: #5b554d;
     }
@@ -302,6 +303,7 @@
       display: grid;
       place-items: center;
       min-width: 0;
+      min-height: 44px;
       border: 1px solid #3e3932;
       border-radius: 6px;
       background: rgba(255,255,255,0.035);
@@ -329,7 +331,7 @@
     }
 
     .tile-controls button {
-      height: 34px;
+      height: 44px;
       border-radius: 6px;
       font-weight: 800;
     }
@@ -451,6 +453,12 @@
       font-weight: 850;
     }
 
+    .key-hint {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
     .states {
       margin-top: 14px;
       border: 1px solid var(--line-soft);
@@ -518,9 +526,17 @@
         padding: 8px;
       }
 
+      .tile-column {
+        grid-template-columns: 1fr;
+      }
+
+      .tile-label {
+        text-align: left;
+      }
+
       .rail {
-        grid-template-rows: repeat(7, 30px);
-        padding: 6px;
+        grid-template-columns: repeat(7, minmax(30px, 1fr));
+        padding: 8px;
       }
     }
   </style>
@@ -556,13 +572,6 @@
               <button id="targetUp" type="button">+</button>
             </div>
             <p class="hint">W grze zwykle celem jest środkowy otwór, czyli 4.</p>
-          </div>
-
-          <div class="field">
-            <label class="toggle">
-              <input id="wrapToggle" type="checkbox">
-              <span>Pozycje zawijają się 1 ↔ 7</span>
-            </label>
           </div>
 
           <div class="field">
@@ -627,7 +636,6 @@
       tileCount: 4,
       positions: [1, 2, 3, 4],
       target: 4,
-      wrap: false,
       effects: createEffects(4),
       lastSolutionText: ""
     };
@@ -637,7 +645,6 @@
       targetValue: document.getElementById("targetValue"),
       targetDown: document.getElementById("targetDown"),
       targetUp: document.getElementById("targetUp"),
-      wrapToggle: document.getElementById("wrapToggle"),
       lockBody: document.getElementById("lockBody"),
       dependencyMatrix: document.getElementById("dependencyMatrix"),
       solutionBox: document.getElementById("solutionBox"),
@@ -669,10 +676,6 @@
     }
 
     function normalizePosition(value) {
-      if (state.wrap) {
-        const size = MAX_POS - MIN_POS + 1;
-        return ((value - MIN_POS) % size + size) % size + MIN_POS;
-      }
       if (value < MIN_POS || value > MAX_POS) {
         return null;
       }
@@ -811,9 +814,13 @@
       return states;
     }
 
+    function keyForAction(action) {
+      return action.direction > 0 ? "A" : "D";
+    }
+
     function describeAction(action) {
       const direction = action.direction > 0 ? "+1" : "-1";
-      return `płytka ${action.tile + 1}: ${direction}`;
+      return `płytka ${action.tile + 1}: ${direction}, naciśnij ${keyForAction(action)}`;
     }
 
     function renderSolution(solution) {
@@ -843,9 +850,9 @@
       ].join("\n");
 
       const steps = solution.map((action) => {
-        const dirClass = action.direction > 0 ? "same" : "opposite";
         const dir = action.direction > 0 ? "+1" : "-1";
-        return `<li><span class="step-action"><span class="pill">P${action.tile + 1}</span><span>${dir}</span></span></li>`;
+        const key = keyForAction(action);
+        return `<li><span class="step-action"><span class="pill">P${action.tile + 1}</span><span>${dir}</span><span class="key-hint">naciśnij ${key}</span></span></li>`;
       }).join("");
 
       const rows = states.map((values, index) => {
@@ -892,7 +899,7 @@
 
         const rail = document.createElement("div");
         rail.className = "rail";
-        for (let pos = MAX_POS; pos >= MIN_POS; pos -= 1) {
+        for (let pos = MIN_POS; pos <= MAX_POS; pos += 1) {
           const slot = document.createElement("button");
           slot.type = "button";
           slot.className = "slot";
@@ -968,7 +975,6 @@
     function renderSummary() {
       els.summary.textContent = `${state.tileCount} płytki`;
       els.targetValue.textContent = String(state.target);
-      els.wrapToggle.checked = state.wrap;
       els.positionText.textContent = `Aktualne pozycje: ${state.positions.join(",")} | Cel: ${Array(state.tileCount).fill(state.target).join(",")}`;
     }
 
@@ -993,12 +999,6 @@
       renderSummary();
     });
 
-    els.wrapToggle.addEventListener("change", () => {
-      state.wrap = els.wrapToggle.checked;
-      clearSolution();
-      renderSummary();
-    });
-
     els.solveButton.addEventListener("click", () => {
       els.copyStatus.textContent = "";
       renderSolution(solvePuzzle());
@@ -1008,7 +1008,6 @@
       state.tileCount = 4;
       state.positions = [1, 2, 3, 4];
       state.target = 4;
-      state.wrap = false;
       state.effects = createEffects(4);
       clearSolution();
       render();
