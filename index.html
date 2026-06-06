@@ -1437,6 +1437,24 @@
       }, 1200);
     }
 
+    function trackSolverUse(solution) {
+      try {
+        if (typeof window.gtag !== "function") {
+          return;
+        }
+
+        window.gtag("event", "solver_used", {
+          tile_count: state.tileCount,
+          target_position: state.target,
+          start_positions: state.positions.join(","),
+          result: solution === null ? "no_solution" : solution.length === 0 ? "already_solved" : "solution_found",
+          move_count: solution ? solution.length : 0
+        });
+      } catch {
+        // Analytics must not affect the solver UI.
+      }
+    }
+
     function render() {
       translateStatic();
       renderTileCountButtons();
@@ -1466,7 +1484,10 @@
         els.solutionBox.innerHTML = `<div class="empty-result">${t("calculating")}</div>`;
         yieldToBrowser()
           .then(() => solvePuzzle())
-          .then((solution) => renderSolution(solution))
+          .then((solution) => {
+            renderSolution(solution);
+            trackSolverUse(solution);
+          })
           .catch((error) => {
             state.solutionStates = [];
             state.solutionActions = [];
