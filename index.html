@@ -265,6 +265,22 @@
       line-height: 1.45;
     }
 
+    .instructions {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .instructions li {
+      margin-bottom: 7px;
+    }
+
+    .instructions li:last-child {
+      margin-bottom: 0;
+    }
+
     .stage {
       display: grid;
       grid-template-rows: auto 1fr auto;
@@ -666,6 +682,16 @@
               Jeśli w grze działa odwrotnie, przepisz wynik z przeciwnym kierunkiem.
             </p>
           </div>
+
+          <div class="field">
+            <div class="field-title" data-i18n="instructionsTitle">Jak korzystać</div>
+            <ol class="instructions">
+              <li data-i18n="instruction1">Wybierz liczbę płytek i ustaw ich aktualne pozycje w środkowym panelu.</li>
+              <li data-i18n="instruction2">W macierzy zależności klikaj pola, aż ustawisz brak, + albo - dla płytek, które reagują na ruch.</li>
+              <li data-i18n="instruction3">Kliknij „Rozwiąż”, a lista po prawej pokaże najkrótszą sekwencję ruchów.</li>
+              <li data-i18n="instruction4">Kliknij krok rozwiązania, żeby podświetlić układ zamka po tym kroku.</li>
+            </ol>
+          </div>
         </div>
       </section>
 
@@ -729,6 +755,11 @@
         targetHint: "W grze zwykle celem jest środkowy otwór, czyli 4.",
         movementConvention: "Konwencja ruchu",
         movementHint: "Przyjmij, że +1 to ten kierunek, w którym rośnie wpisana pozycja. Jeśli w grze działa odwrotnie, przepisz wynik z przeciwnym kierunkiem.",
+        instructionsTitle: "Jak korzystać",
+        instruction1: "Wybierz liczbę płytek i ustaw ich aktualne pozycje w środkowym panelu.",
+        instruction2: "W macierzy zależności klikaj pola, aż ustawisz brak, + albo - dla płytek, które reagują na ruch.",
+        instruction3: "Kliknij „Rozwiąż”, a lista po prawej pokaże najkrótszą sekwencję ruchów.",
+        instruction4: "Kliknij krok rozwiązania, żeby podświetlić układ zamka po tym kroku.",
         positionsTitle: "Pozycje płytek",
         positionsHint: "Klikaj + / -, żeby ustawić aktualny stan",
         relationsResultTitle: "Zależności i wynik",
@@ -771,6 +802,11 @@
         targetHint: "The target is usually the middle hole, position 4.",
         movementConvention: "Movement convention",
         movementHint: "Treat +1 as the direction where the entered position increases. If the game behaves the other way around, use the opposite direction from the result.",
+        instructionsTitle: "How to use",
+        instruction1: "Choose the number of plates and set their current positions in the middle panel.",
+        instruction2: "In the relation matrix, click cells until each reacting plate is set to none, +, or -.",
+        instruction3: "Click “Solve”, and the list on the right will show the shortest move sequence.",
+        instruction4: "Click a solution step to highlight what the lock should look like after that step.",
         positionsTitle: "Plate positions",
         positionsHint: "Click + / - to set the current state",
         relationsResultTitle: "Relations and result",
@@ -813,6 +849,11 @@
         targetHint: "Das Ziel ist normalerweise das mittlere Loch, also Position 4.",
         movementConvention: "Bewegungskonvention",
         movementHint: "Nimm +1 als die Richtung, in der die eingegebene Position steigt. Wenn es im Spiel umgekehrt ist, nutze die entgegengesetzte Richtung aus dem Ergebnis.",
+        instructionsTitle: "So funktioniert es",
+        instruction1: "Wähle die Anzahl der Platten und stelle ihre aktuellen Positionen im mittleren Bereich ein.",
+        instruction2: "Klicke in der Abhängigkeitsmatrix auf die Felder, bis jede reagierende Platte auf keine, + oder - gesetzt ist.",
+        instruction3: "Klicke auf „Lösen”, dann zeigt die Liste rechts die kürzeste Zugfolge.",
+        instruction4: "Klicke auf einen Lösungsschritt, um zu sehen, wie das Schloss nach diesem Schritt aussehen sollte.",
         positionsTitle: "Plattenpositionen",
         positionsHint: "Klicke + / -, um den aktuellen Zustand einzustellen",
         relationsResultTitle: "Abhängigkeiten und Ergebnis",
@@ -855,6 +896,11 @@
         targetHint: "Обычно цель — среднее отверстие, то есть позиция 4.",
         movementConvention: "Правило движения",
         movementHint: "Считай +1 направлением, в котором введенная позиция увеличивается. Если в игре все наоборот, используй противоположное направление из результата.",
+        instructionsTitle: "Как пользоваться",
+        instruction1: "Выбери количество пластин и задай их текущие позиции в средней панели.",
+        instruction2: "В матрице связей нажимай ячейки, пока для реагирующих пластин не будет выбрано нет, + или -.",
+        instruction3: "Нажми «Решить», и список справа покажет самую короткую последовательность ходов.",
+        instruction4: "Нажми на шаг решения, чтобы подсветить, как должен выглядеть замок после этого шага.",
         positionsTitle: "Позиции пластин",
         positionsHint: "Нажимай + / -, чтобы задать текущее состояние",
         relationsResultTitle: "Связи и результат",
