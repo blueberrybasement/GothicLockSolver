@@ -90,6 +90,40 @@
       flex-wrap: wrap;
     }
 
+    .header-tools {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .language-switch {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      background: #15120f;
+    }
+
+    .language-switch button {
+      min-width: 38px;
+      height: 30px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .language-switch button.active {
+      color: #11100e;
+      background: var(--accent);
+    }
+
     .ghost-button {
       height: 36px;
       padding: 0 12px;
@@ -544,6 +578,15 @@
         grid-template-columns: 1fr 1fr;
       }
 
+      .header-tools {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .language-switch {
+        justify-content: center;
+      }
+
       .primary-button,
       .ghost-button {
         width: 100%;
@@ -581,38 +624,46 @@
   <div class="app">
     <header>
       <h1>Lock Solver Gothic</h1>
-      <div class="header-actions">
-        <button id="resetButton" class="ghost-button" type="button">Reset</button>
-        <button id="copyButton" class="ghost-button" type="button">Kopiuj wynik</button>
-        <button id="solveButton" class="primary-button" type="button">Rozwiąż</button>
+      <div class="header-tools">
+        <div id="languageSwitch" class="language-switch" aria-label="Language">
+          <button type="button" data-lang="pl">PL</button>
+          <button type="button" data-lang="en">EN</button>
+          <button type="button" data-lang="de">DE</button>
+          <button type="button" data-lang="ru">RU</button>
+        </div>
+        <div class="header-actions">
+          <button id="resetButton" class="ghost-button" type="button" data-i18n="resetButton">Reset</button>
+          <button id="copyButton" class="ghost-button" type="button" data-i18n="copyButton">Kopiuj wynik</button>
+          <button id="solveButton" class="primary-button" type="button" data-i18n="solveButton">Rozwiąż</button>
+        </div>
       </div>
     </header>
 
     <main>
       <section class="panel">
         <div class="panel-header">
-          <div class="panel-title">Ustawienia</div>
+          <div class="panel-title" data-i18n="settingsTitle">Ustawienia</div>
           <div id="summary" class="status-line">4 płytki</div>
         </div>
         <div class="panel-body">
           <div class="field">
-            <div class="field-title">Liczba płytek</div>
+            <div class="field-title" data-i18n="tileCountTitle">Liczba płytek</div>
             <div id="tileCountButtons" class="segmented" aria-label="Liczba płytek"></div>
           </div>
 
           <div class="field">
-            <label>Pozycja docelowa</label>
+            <label data-i18n="targetPosition">Pozycja docelowa</label>
             <div class="numeric-row">
               <button id="targetDown" type="button">-</button>
               <div id="targetValue" class="value-display">4</div>
               <button id="targetUp" type="button">+</button>
             </div>
-            <p class="hint">W grze zwykle celem jest środkowy otwór, czyli 4.</p>
+            <p class="hint" data-i18n="targetHint">W grze zwykle celem jest środkowy otwór, czyli 4.</p>
           </div>
 
           <div class="field">
-            <div class="field-title">Konwencja ruchu</div>
-            <p class="hint">
+            <div class="field-title" data-i18n="movementConvention">Konwencja ruchu</div>
+            <p class="hint" data-i18n="movementHint">
               Przyjmij, że +1 to ten kierunek, w którym rośnie wpisana pozycja.
               Jeśli w grze działa odwrotnie, przepisz wynik z przeciwnym kierunkiem.
             </p>
@@ -622,8 +673,8 @@
 
       <section class="panel stage">
         <div class="panel-header">
-          <div class="panel-title">Pozycje płytek</div>
-          <div class="status-line">Klikaj + / -, żeby ustawić aktualny stan</div>
+          <div class="panel-title" data-i18n="positionsTitle">Pozycje płytek</div>
+          <div class="status-line" data-i18n="positionsHint">Klikaj + / -, żeby ustawić aktualny stan</div>
         </div>
         <div class="lock-frame">
           <div id="lockBody" class="lock-body"></div>
@@ -635,25 +686,25 @@
 
       <section class="panel">
         <div class="panel-header">
-          <div class="panel-title">Zależności i wynik</div>
-          <div id="relationLegend" class="status-line">klik: brak / + / -</div>
+          <div class="panel-title" data-i18n="relationsResultTitle">Zależności i wynik</div>
+          <div id="relationLegend" class="status-line" data-i18n="relationLegend">klik: brak / + / -</div>
         </div>
         <div class="panel-body">
           <div class="field">
-            <div class="field-title">Macierz zależności</div>
+            <div class="field-title" data-i18n="matrixTitle">Macierz zależności</div>
             <div class="dependency-wrap">
               <table id="dependencyMatrix" class="matrix"></table>
             </div>
-            <p class="hint">
+            <p class="hint" data-i18n="matrixHint">
               Wiersz to poruszana płytka. Kolumna to płytka, która reaguje.
               + oznacza ten sam kierunek, - przeciwny.
             </p>
           </div>
 
           <div class="field">
-            <div class="field-title">Rozwiązanie</div>
+            <div class="field-title" data-i18n="solutionTitle">Rozwiązanie</div>
             <div id="solutionBox" class="solution-box">
-              <div class="empty-result">Ustaw pozycje i zależności, potem kliknij „Rozwiąż”.</div>
+              <div class="empty-result" data-i18n="emptySolution">Ustaw pozycje i zależności, potem kliknij „Rozwiąż”.</div>
             </div>
             <div id="copyStatus" class="hint"></div>
           </div>
@@ -667,6 +718,193 @@
     const MAX_TILES = 7;
     const MIN_POS = 1;
     const MAX_POS = 7;
+    const SUPPORTED_LANGS = ["pl", "en", "de", "ru"];
+
+    const translations = {
+      pl: {
+        resetButton: "Reset",
+        copyButton: "Kopiuj wynik",
+        solveButton: "Rozwiąż",
+        settingsTitle: "Ustawienia",
+        tileCountTitle: "Liczba płytek",
+        targetPosition: "Pozycja docelowa",
+        targetHint: "W grze zwykle celem jest środkowy otwór, czyli 4.",
+        movementConvention: "Konwencja ruchu",
+        movementHint: "Przyjmij, że +1 to ten kierunek, w którym rośnie wpisana pozycja. Jeśli w grze działa odwrotnie, przepisz wynik z przeciwnym kierunkiem.",
+        positionsTitle: "Pozycje płytek",
+        positionsHint: "Klikaj + / -, żeby ustawić aktualny stan",
+        relationsResultTitle: "Zależności i wynik",
+        relationLegend: "klik: brak / + / -",
+        matrixTitle: "Macierz zależności",
+        matrixHint: "Wiersz to poruszana płytka. Kolumna to płytka, która reaguje. + oznacza ten sam kierunek, - przeciwny.",
+        solutionTitle: "Rozwiązanie",
+        emptySolution: "Ustaw pozycje i zależności, potem kliknij „Rozwiąż”.",
+        noSolution: "Brak rozwiązania dla podanych pozycji i zależności.",
+        alreadySolved: "Zamek jest już rozwiązany.",
+        optimal: "Optymalne rozwiązanie: {moves} ruchów",
+        states: "Stany:",
+        start: "start",
+        after: "po {step}",
+        goal: "Cel: {values}",
+        tileAction: "płytka {tile}: {dir}, naciśnij {key}",
+        keyHint: "naciśnij {key}",
+        tileLabel: "Płytka {tile}",
+        setTileTitle: "Ustaw płytkę {tile} na pozycję {pos}",
+        decreaseTitle: "Zmniejsz pozycję płytki {tile}",
+        increaseTitle: "Zwiększ pozycję płytki {tile}",
+        moveHeader: "rusz",
+        auto: "auto",
+        none: "brak",
+        summary: "{count} płytki",
+        currentPositions: "Aktualne pozycje: {positions} | Cel: {goal}{preview}",
+        preview: " | Podgląd po kroku {step}: {values}",
+        copyFirst: "Najpierw wylicz rozwiązanie.",
+        copied: "Wynik skopiowany do schowka.",
+        copyFailed: "Nie udało się skopiować. Zaznacz wynik ręcznie."
+      },
+      en: {
+        resetButton: "Reset",
+        copyButton: "Copy result",
+        solveButton: "Solve",
+        settingsTitle: "Settings",
+        tileCountTitle: "Number of plates",
+        targetPosition: "Target position",
+        targetHint: "The target is usually the middle hole, position 4.",
+        movementConvention: "Movement convention",
+        movementHint: "Treat +1 as the direction where the entered position increases. If the game behaves the other way around, use the opposite direction from the result.",
+        positionsTitle: "Plate positions",
+        positionsHint: "Click + / - to set the current state",
+        relationsResultTitle: "Relations and result",
+        relationLegend: "click: none / + / -",
+        matrixTitle: "Relation matrix",
+        matrixHint: "A row is the moved plate. A column is the plate that reacts. + means the same direction, - means the opposite direction.",
+        solutionTitle: "Solution",
+        emptySolution: "Set positions and relations, then click “Solve”.",
+        noSolution: "No solution for the given positions and relations.",
+        alreadySolved: "The lock is already solved.",
+        optimal: "Optimal solution: {moves} moves",
+        states: "States:",
+        start: "start",
+        after: "after {step}",
+        goal: "Goal: {values}",
+        tileAction: "plate {tile}: {dir}, press {key}",
+        keyHint: "press {key}",
+        tileLabel: "Plate {tile}",
+        setTileTitle: "Set plate {tile} to position {pos}",
+        decreaseTitle: "Decrease plate {tile} position",
+        increaseTitle: "Increase plate {tile} position",
+        moveHeader: "move",
+        auto: "auto",
+        none: "none",
+        summary: "{count} plates",
+        currentPositions: "Current positions: {positions} | Goal: {goal}{preview}",
+        preview: " | Preview after step {step}: {values}",
+        copyFirst: "Calculate a solution first.",
+        copied: "Result copied to clipboard.",
+        copyFailed: "Copy failed. Select the result manually."
+      },
+      de: {
+        resetButton: "Zurücksetzen",
+        copyButton: "Ergebnis kopieren",
+        solveButton: "Lösen",
+        settingsTitle: "Einstellungen",
+        tileCountTitle: "Anzahl der Platten",
+        targetPosition: "Zielposition",
+        targetHint: "Das Ziel ist normalerweise das mittlere Loch, also Position 4.",
+        movementConvention: "Bewegungskonvention",
+        movementHint: "Nimm +1 als die Richtung, in der die eingegebene Position steigt. Wenn es im Spiel umgekehrt ist, nutze die entgegengesetzte Richtung aus dem Ergebnis.",
+        positionsTitle: "Plattenpositionen",
+        positionsHint: "Klicke + / -, um den aktuellen Zustand einzustellen",
+        relationsResultTitle: "Abhängigkeiten und Ergebnis",
+        relationLegend: "Klick: keine / + / -",
+        matrixTitle: "Abhängigkeitsmatrix",
+        matrixHint: "Die Zeile ist die bewegte Platte. Die Spalte ist die Platte, die reagiert. + bedeutet gleiche Richtung, - bedeutet Gegenrichtung.",
+        solutionTitle: "Lösung",
+        emptySolution: "Stelle Positionen und Abhängigkeiten ein, dann klicke auf „Lösen”.",
+        noSolution: "Keine Lösung für die angegebenen Positionen und Abhängigkeiten.",
+        alreadySolved: "Das Schloss ist bereits gelöst.",
+        optimal: "Optimale Lösung: {moves} Züge",
+        states: "Zustände:",
+        start: "Start",
+        after: "nach {step}",
+        goal: "Ziel: {values}",
+        tileAction: "Platte {tile}: {dir}, drücke {key}",
+        keyHint: "drücke {key}",
+        tileLabel: "Platte {tile}",
+        setTileTitle: "Platte {tile} auf Position {pos} setzen",
+        decreaseTitle: "Position von Platte {tile} verringern",
+        increaseTitle: "Position von Platte {tile} erhöhen",
+        moveHeader: "bewegen",
+        auto: "auto",
+        none: "keine",
+        summary: "{count} Platten",
+        currentPositions: "Aktuelle Positionen: {positions} | Ziel: {goal}{preview}",
+        preview: " | Vorschau nach Schritt {step}: {values}",
+        copyFirst: "Berechne zuerst eine Lösung.",
+        copied: "Ergebnis in die Zwischenablage kopiert.",
+        copyFailed: "Kopieren fehlgeschlagen. Markiere das Ergebnis manuell."
+      },
+      ru: {
+        resetButton: "Сброс",
+        copyButton: "Скопировать",
+        solveButton: "Решить",
+        settingsTitle: "Настройки",
+        tileCountTitle: "Количество пластин",
+        targetPosition: "Целевая позиция",
+        targetHint: "Обычно цель — среднее отверстие, то есть позиция 4.",
+        movementConvention: "Правило движения",
+        movementHint: "Считай +1 направлением, в котором введенная позиция увеличивается. Если в игре все наоборот, используй противоположное направление из результата.",
+        positionsTitle: "Позиции пластин",
+        positionsHint: "Нажимай + / -, чтобы задать текущее состояние",
+        relationsResultTitle: "Связи и результат",
+        relationLegend: "клик: нет / + / -",
+        matrixTitle: "Матрица связей",
+        matrixHint: "Строка — пластина, которую двигают. Столбец — пластина, которая реагирует. + значит то же направление, - значит противоположное.",
+        solutionTitle: "Решение",
+        emptySolution: "Задай позиции и связи, затем нажми «Решить».",
+        noSolution: "Нет решения для заданных позиций и связей.",
+        alreadySolved: "Замок уже решен.",
+        optimal: "Оптимальное решение: {moves} ходов",
+        states: "Состояния:",
+        start: "старт",
+        after: "после {step}",
+        goal: "Цель: {values}",
+        tileAction: "пластина {tile}: {dir}, нажми {key}",
+        keyHint: "нажми {key}",
+        tileLabel: "Пластина {tile}",
+        setTileTitle: "Установить пластину {tile} в позицию {pos}",
+        decreaseTitle: "Уменьшить позицию пластины {tile}",
+        increaseTitle: "Увеличить позицию пластины {tile}",
+        moveHeader: "двигать",
+        auto: "авто",
+        none: "нет",
+        summary: "{count} пластин",
+        currentPositions: "Текущие позиции: {positions} | Цель: {goal}{preview}",
+        preview: " | Просмотр после шага {step}: {values}",
+        copyFirst: "Сначала рассчитай решение.",
+        copied: "Результат скопирован в буфер обмена.",
+        copyFailed: "Не удалось скопировать. Выдели результат вручную."
+      }
+    };
+
+    function detectLanguage() {
+      try {
+        const saved = localStorage.getItem("lockSolverLanguage");
+        if (SUPPORTED_LANGS.includes(saved)) {
+          return saved;
+        }
+      } catch {
+        // Some local-file browser contexts can block storage.
+      }
+      const browserLang = (navigator.language || "en").slice(0, 2).toLowerCase();
+      return SUPPORTED_LANGS.includes(browserLang) ? browserLang : "en";
+    }
+
+    function t(key, vars = {}) {
+      const dictionary = translations[state.lang] || translations.en;
+      const template = dictionary[key] || translations.en[key] || key;
+      return template.replace(/\{(\w+)\}/g, (_, name) => vars[name] ?? "");
+    }
 
     const state = {
       tileCount: 4,
@@ -674,7 +912,10 @@
       target: 4,
       effects: createEffects(4),
       solutionStates: [],
+      solutionActions: [],
+      solutionMode: "empty",
       previewStep: null,
+      lang: detectLanguage(),
       lastSolutionText: ""
     };
 
@@ -691,7 +932,8 @@
       copyButton: document.getElementById("copyButton"),
       copyStatus: document.getElementById("copyStatus"),
       summary: document.getElementById("summary"),
-      positionText: document.getElementById("positionText")
+      positionText: document.getElementById("positionText"),
+      languageSwitch: document.getElementById("languageSwitch")
     };
 
     function createEffects(tileCount) {
@@ -873,55 +1115,64 @@
 
     function describeAction(action) {
       const direction = action.direction > 0 ? "+1" : "-1";
-      return `płytka ${action.tile + 1}: ${direction}, naciśnij ${keyForAction(action)}`;
+      return t("tileAction", { tile: action.tile + 1, dir: direction, key: keyForAction(action) });
     }
 
     function renderSolution(solution) {
       if (solution === null) {
         state.solutionStates = [];
+        state.solutionActions = [];
+        state.solutionMode = "none";
         state.previewStep = null;
         renderTiles();
         renderSummary();
-        state.lastSolutionText = "Brak rozwiązania dla podanych pozycji i zależności.";
+        state.lastSolutionText = t("noSolution");
         els.solutionBox.innerHTML = `<div class="error-result">${state.lastSolutionText}</div>`;
         return;
       }
 
       if (solution.length === 0) {
         state.solutionStates = [[...state.positions]];
+        state.solutionActions = [];
+        state.solutionMode = "solved";
         state.previewStep = null;
         renderTiles();
         renderSummary();
-        state.lastSolutionText = "Zamek jest już rozwiązany.";
+        state.lastSolutionText = t("alreadySolved");
         els.solutionBox.innerHTML = `<div class="empty-result">${state.lastSolutionText}</div>`;
         return;
       }
 
       const states = simulate(solution);
       state.solutionStates = states;
+      state.solutionActions = [...solution];
+      state.solutionMode = "solution";
       state.previewStep = null;
       renderTiles();
       renderSummary();
       const stepText = solution.map((action, index) => `${index + 1}. ${describeAction(action)}`);
-      const stateText = states.map((values, index) => `${index === 0 ? "start" : "po " + index}: ${values.join(",")}`);
+      const stateText = states.map((values, index) => {
+        const label = index === 0 ? t("start") : t("after", { step: index });
+        return `${label}: ${values.join(",")}`;
+      });
       state.lastSolutionText = [
-        `Optymalne rozwiązanie: ${solution.length} ruchów`,
+        t("optimal", { moves: solution.length }),
         ...stepText,
         "",
-        "Stany:",
+        t("states"),
         ...stateText,
         "",
-        `Cel: ${Array(state.tileCount).fill(state.target).join(",")}`
+        t("goal", { values: Array(state.tileCount).fill(state.target).join(",") })
       ].join("\n");
 
       const steps = solution.map((action, index) => {
         const dir = action.direction > 0 ? "+1" : "-1";
         const key = keyForAction(action);
-        return `<li data-step-item="${index + 1}"><button class="step-preview" type="button" data-preview-step="${index + 1}"><span class="step-action"><span class="pill" style="${tileColorStyle(action.tile)}">P${action.tile + 1}</span><span>${dir}</span><span class="key-hint">naciśnij ${key}</span></span></button></li>`;
+        return `<li data-step-item="${index + 1}"><button class="step-preview" type="button" data-preview-step="${index + 1}"><span class="step-action"><span class="pill" style="${tileColorStyle(action.tile)}">P${action.tile + 1}</span><span>${dir}</span><span class="key-hint">${t("keyHint", { key })}</span></span></button></li>`;
       }).join("");
 
       const rows = states.map((values, index) => {
-        const label = index === 0 ? "start" : `po ${index}`;
+        const label = index === 0 ? t("start") : t("after", { step: index });
         return `<div class="state-row"><span>${label}</span><span>${values.join(",")}</span></div>`;
       }).join("");
 
@@ -943,9 +1194,11 @@
     function clearSolution() {
       state.lastSolutionText = "";
       state.solutionStates = [];
+      state.solutionActions = [];
+      state.solutionMode = "empty";
       state.previewStep = null;
       els.copyStatus.textContent = "";
-      els.solutionBox.innerHTML = '<div class="empty-result">Ustaw pozycje i zależności, potem kliknij „Rozwiąż”.</div>';
+      els.solutionBox.innerHTML = `<div class="empty-result">${t("emptySolution")}</div>`;
     }
 
     function renderStepSelection() {
@@ -977,7 +1230,7 @@
 
         const label = document.createElement("div");
         label.className = "tile-label";
-        label.textContent = `Płytka ${tile + 1}`;
+        label.textContent = t("tileLabel", { tile: tile + 1 });
         column.appendChild(label);
 
         const rail = document.createElement("div");
@@ -996,7 +1249,7 @@
             slot.classList.add("preview");
           }
           slot.textContent = String(pos);
-          slot.title = `Ustaw płytkę ${tile + 1} na pozycję ${pos}`;
+          slot.title = t("setTileTitle", { tile: tile + 1, pos });
           slot.addEventListener("click", () => {
             state.positions[tile] = pos;
             clearSolution();
@@ -1012,12 +1265,12 @@
         const down = document.createElement("button");
         down.type = "button";
         down.textContent = "-";
-        down.title = `Zmniejsz pozycję płytki ${tile + 1}`;
+        down.title = t("decreaseTitle", { tile: tile + 1 });
         down.addEventListener("click", () => changePosition(tile, -1));
         const up = document.createElement("button");
         up.type = "button";
         up.textContent = "+";
-        up.title = `Zwiększ pozycję płytki ${tile + 1}`;
+        up.title = t("increaseTitle", { tile: tile + 1 });
         up.addEventListener("click", () => changePosition(tile, 1));
         controls.append(down, up);
         column.appendChild(controls);
@@ -1027,7 +1280,7 @@
     }
 
     function renderMatrix() {
-      let html = "<thead><tr><th>rusz</th>";
+      let html = `<thead><tr><th>${t("moveHeader")}</th>`;
       for (let target = 0; target < state.tileCount; target += 1) {
         html += `<th>P${target + 1}</th>`;
       }
@@ -1037,12 +1290,12 @@
         html += `<tr><th>P${source + 1}</th>`;
         for (let target = 0; target < state.tileCount; target += 1) {
           if (source === target) {
-            html += '<td><button class="relation-button disabled" type="button" disabled>auto</button></td>';
+            html += `<td><button class="relation-button disabled" type="button" disabled>${t("auto")}</button></td>`;
             continue;
           }
 
           const value = state.effects[source][target];
-          const label = value === 1 ? "+" : value === -1 ? "-" : "brak";
+          const label = value === 1 ? "+" : value === -1 ? "-" : t("none");
           const cls = value === 1 ? "same" : value === -1 ? "opposite" : "";
           html += `<td><button class="relation-button ${cls}" type="button" data-source="${source}" data-target="${target}">${label}</button></td>`;
         }
@@ -1059,15 +1312,72 @@
     }
 
     function renderSummary() {
-      els.summary.textContent = `${state.tileCount} płytki`;
+      els.summary.textContent = t("summary", { count: state.tileCount });
       els.targetValue.textContent = String(state.target);
       const preview = state.previewStep === null
         ? ""
-        : ` | Podgląd po kroku ${state.previewStep}: ${state.solutionStates[state.previewStep].join(",")}`;
-      els.positionText.textContent = `Aktualne pozycje: ${state.positions.join(",")} | Cel: ${Array(state.tileCount).fill(state.target).join(",")}${preview}`;
+        : t("preview", { step: state.previewStep, values: state.solutionStates[state.previewStep].join(",") });
+      els.positionText.textContent = t("currentPositions", {
+        positions: state.positions.join(","),
+        goal: Array(state.tileCount).fill(state.target).join(","),
+        preview
+      });
+    }
+
+    function translateStatic() {
+      document.documentElement.lang = state.lang;
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        element.textContent = t(element.dataset.i18n);
+      });
+      els.languageSwitch.querySelectorAll("[data-lang]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.lang === state.lang);
+      });
+    }
+
+    function refreshSolutionLanguage() {
+      const previewStep = state.previewStep;
+      if (state.solutionMode === "solution") {
+        const actions = [...state.solutionActions];
+        renderSolution(actions);
+        if (previewStep !== null) {
+          state.previewStep = previewStep;
+          renderTiles();
+          renderSummary();
+          renderStepSelection();
+        }
+        return;
+      }
+
+      if (state.solutionMode === "none") {
+        renderSolution(null);
+        return;
+      }
+
+      if (state.solutionMode === "solved") {
+        renderSolution([]);
+        return;
+      }
+
+      clearSolution();
+      renderTiles();
+      renderSummary();
+    }
+
+    function setLanguage(lang) {
+      state.lang = SUPPORTED_LANGS.includes(lang) ? lang : "en";
+      try {
+        localStorage.setItem("lockSolverLanguage", state.lang);
+      } catch {
+        // Language switching should still work when storage is blocked.
+      }
+      translateStatic();
+      renderTileCountButtons();
+      renderMatrix();
+      refreshSolutionLanguage();
     }
 
     function render() {
+      translateStatic();
       renderTileCountButtons();
       renderTiles();
       renderMatrix();
@@ -1099,6 +1409,8 @@
       state.target = 4;
       state.effects = createEffects(4);
       state.solutionStates = [];
+      state.solutionActions = [];
+      state.solutionMode = "empty";
       state.previewStep = null;
       clearSolution();
       render();
@@ -1106,16 +1418,20 @@
 
     els.copyButton.addEventListener("click", async () => {
       if (!state.lastSolutionText) {
-        els.copyStatus.textContent = "Najpierw wylicz rozwiązanie.";
+        els.copyStatus.textContent = t("copyFirst");
         return;
       }
 
       try {
         await navigator.clipboard.writeText(state.lastSolutionText);
-        els.copyStatus.textContent = "Wynik skopiowany do schowka.";
+        els.copyStatus.textContent = t("copied");
       } catch {
-        els.copyStatus.textContent = "Nie udało się skopiować. Zaznacz wynik ręcznie.";
+        els.copyStatus.textContent = t("copyFailed");
       }
+    });
+
+    els.languageSwitch.querySelectorAll("[data-lang]").forEach((button) => {
+      button.addEventListener("click", () => setLanguage(button.dataset.lang));
     });
 
     render();
