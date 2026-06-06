@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lock Solver Gothic</title>
+  <style>
+    :root {
+      --bg: #11100e;
+      --panel: #1c1915;
+      --panel-2: #25211b;
+      --line: #766a5d;
+      --line-soft: #403932;
+      --text: #f1e5d6;
+      --muted: #bba995;
+      --accent: #d7b36a;
+      --accent-2: #8fc7bd;
+      --danger: #d68a73;
+      --shadow: rgba(0, 0, 0, 0.35);
+      --radius: 8px;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px) 0 0 / 52px 52px,
+        linear-gradient(180deg, #171512 0%, #0e0d0c 100%);
+      color: var(--text);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: #2a251f;
+      cursor: pointer;
+      transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+      background: #332d25;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(13, 12, 11, 0.82);
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ghost-button {
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 6px;
+      background: transparent;
+    }
+
+    .primary-button {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 6px;
+      border-color: #e1c17a;
+      color: #17120b;
+      background: linear-gradient(180deg, #e8c97f, #bd9850);
+      font-weight: 700;
+    }
+
+    .primary-button:hover {
+      background: linear-gradient(180deg, #f0d48d, #caa55c);
+      border-color: #f0d48d;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(260px, 320px) minmax(360px, 1fr) minmax(310px, 390px);
+      gap: 14px;
+      padding: 14px;
+      min-height: 0;
+    }
+
+    .panel {
+      min-height: 0;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      background: rgba(28, 25, 21, 0.94);
+      box-shadow: 0 18px 35px var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 750;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .panel-body {
+      padding: 14px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label,
+    .field-title {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .segmented button {
+      height: 38px;
+      border: 0;
+      border-right: 1px solid var(--line-soft);
+      border-radius: 0;
+      background: #211d18;
+    }
+
+    .segmented button:last-child {
+      border-right: 0;
+    }
+
+    .segmented button.active {
+      color: #14100b;
+      background: var(--accent);
+      font-weight: 750;
+    }
+
+    .numeric-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .numeric-row button {
+      height: 36px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+
+    .value-display {
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      background: #14120f;
+      font-weight: 750;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--text);
+      user-select: none;
+    }
+
+    .toggle input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .hint {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 0;
+    }
+
+    .lock-frame {
+      position: relative;
+      min-height: 430px;
+      padding: 24px 18px;
+      overflow: auto;
+      background:
+        linear-gradient(90deg, transparent, rgba(255,255,255,0.045), transparent) center / 70% 1px no-repeat,
+        linear-gradient(180deg, #1b1916, #0f0e0d);
+    }
+
+    .lock-body {
+      min-width: 320px;
+      display: grid;
+      grid-template-columns: repeat(var(--tile-count), minmax(44px, 1fr));
+      gap: 10px;
+      align-items: stretch;
+      padding: 12px;
+      border: 1px solid #5f574f;
+      border-radius: 8px;
+      background: linear-gradient(115deg, #24231f, #11100f);
+      box-shadow: inset 0 0 0 1px #0c0b0a, 0 16px 32px rgba(0,0,0,0.42);
+    }
+
+    .tile-column {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .tile-label {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .rail {
+      position: relative;
+      display: grid;
+      grid-template-rows: repeat(7, 34px);
+      gap: 5px;
+      padding: 8px;
+      border: 1px solid #443e36;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #0e0d0c, #25221d);
+    }
+
+    .rail::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: 50%;
+      width: 4px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #5b554d;
+    }
+
+    .slot {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      border: 1px solid #3e3932;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.035);
+      color: #8e8172;
+      font-size: 11px;
+      z-index: 1;
+    }
+
+    .slot.target {
+      border-color: rgba(215, 179, 106, 0.58);
+      background: rgba(215, 179, 106, 0.09);
+    }
+
+    .slot.current {
+      color: #11100e;
+      border-color: #e7d5b3;
+      background: linear-gradient(180deg, #f2e5cf, #aa9480);
+      font-weight: 850;
+    }
+
+    .tile-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .tile-controls button {
+      height: 34px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+
+    .dependency-wrap {
+      overflow: auto;
+      max-height: 46vh;
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      background: #14120f;
+    }
+
+    .matrix {
+      width: 100%;
+      min-width: 300px;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .matrix th,
+    .matrix td {
+      height: 39px;
+      border-bottom: 1px solid var(--line-soft);
+      border-right: 1px solid var(--line-soft);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .matrix th {
+      color: var(--muted);
+      background: #1b1814;
+      font-weight: 750;
+    }
+
+    .matrix tr:last-child td,
+    .matrix tr:last-child th {
+      border-bottom: 0;
+    }
+
+    .relation-button {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 850;
+    }
+
+    .relation-button.same {
+      color: #11100e;
+      background: var(--accent-2);
+    }
+
+    .relation-button.opposite {
+      color: #1c0f0a;
+      background: var(--danger);
+    }
+
+    .relation-button.disabled {
+      color: #5c5148;
+      cursor: default;
+      background: rgba(255,255,255,0.025);
+    }
+
+    .solution-box {
+      min-height: 190px;
+      max-height: 42vh;
+      overflow: auto;
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      background: #11100e;
+    }
+
+    .empty-result,
+    .error-result {
+      padding: 14px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .error-result {
+      color: #f0b19f;
+    }
+
+    .steps {
+      list-style: decimal;
+      margin: 0;
+      padding: 10px 10px 10px 42px;
+    }
+
+    .steps li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--text);
+    }
+
+    .steps li:last-child {
+      border-bottom: 0;
+    }
+
+    .step-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .pill {
+      display: inline-grid;
+      place-items: center;
+      min-width: 32px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      color: #11100e;
+      background: var(--accent);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .states {
+      margin-top: 14px;
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #11100e;
+    }
+
+    .state-row {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 8px;
+      padding: 7px 9px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-family: Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .state-row:last-child {
+      border-bottom: 0;
+    }
+
+    .status-line {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1060px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .dependency-wrap,
+      .solution-box {
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      header {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .header-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .primary-button,
+      .ghost-button {
+        width: 100%;
+      }
+
+      main {
+        padding: 10px;
+      }
+
+      .lock-frame {
+        padding: 12px 8px;
+      }
+
+      .lock-body {
+        gap: 6px;
+        padding: 8px;
+      }
+
+      .rail {
+        grid-template-rows: repeat(7, 30px);
+        padding: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Lock Solver Gothic</h1>
+      <div class="header-actions">
+        <button id="resetButton" class="ghost-button" type="button">Reset</button>
+        <button id="copyButton" class="ghost-button" type="button">Kopiuj wynik</button>
+        <button id="solveButton" class="primary-button" type="button">Rozwiąż</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Ustawienia</div>
+          <div id="summary" class="status-line">4 płytki</div>
+        </div>
+        <div class="panel-body">
+          <div class="field">
+            <div class="field-title">Liczba płytek</div>
+            <div id="tileCountButtons" class="segmented" aria-label="Liczba płytek"></div>
+          </div>
+
+          <div class="field">
+            <label>Pozycja docelowa</label>
+            <div class="numeric-row">
+              <button id="targetDown" type="button">-</button>
+              <div id="targetValue" class="value-display">4</div>
+              <button id="targetUp" type="button">+</button>
+            </div>
+            <p class="hint">W grze zwykle celem jest środkowy otwór, czyli 4.</p>
+          </div>
+
+          <div class="field">
+            <label class="toggle">
+              <input id="wrapToggle" type="checkbox">
+              <span>Pozycje zawijają się 1 ↔ 7</span>
+            </label>
+          </div>
+
+          <div class="field">
+            <div class="field-title">Konwencja ruchu</div>
+            <p class="hint">
+              Przyjmij, że +1 to ten kierunek, w którym rośnie wpisana pozycja.
+              Jeśli w grze działa odwrotnie, przepisz wynik z przeciwnym kierunkiem.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel stage">
+        <div class="panel-header">
+          <div class="panel-title">Pozycje płytek</div>
+          <div class="status-line">Klikaj + / -, żeby ustawić aktualny stan</div>
+        </div>
+        <div class="lock-frame">
+          <div id="lockBody" class="lock-body"></div>
+        </div>
+        <div class="panel-body">
+          <div id="positionText" class="status-line"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Zależności i wynik</div>
+          <div id="relationLegend" class="status-line">klik: brak / + / -</div>
+        </div>
+        <div class="panel-body">
+          <div class="field">
+            <div class="field-title">Macierz zależności</div>
+            <div class="dependency-wrap">
+              <table id="dependencyMatrix" class="matrix"></table>
+            </div>
+            <p class="hint">
+              Wiersz to poruszana płytka. Kolumna to płytka, która reaguje.
+              + oznacza ten sam kierunek, - przeciwny.
+            </p>
+          </div>
+
+          <div class="field">
+            <div class="field-title">Rozwiązanie</div>
+            <div id="solutionBox" class="solution-box">
+              <div class="empty-result">Ustaw pozycje i zależności, potem kliknij „Rozwiąż”.</div>
+            </div>
+            <div id="copyStatus" class="hint"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const MIN_TILES = 4;
+    const MAX_TILES = 7;
+    const MIN_POS = 1;
+    const MAX_POS = 7;
+
+    const state = {
+      tileCount: 4,
+      positions: [1, 2, 3, 4],
+      target: 4,
+      wrap: false,
+      effects: createEffects(4),
+      lastSolutionText: ""
+    };
+
+    const els = {
+      tileCountButtons: document.getElementById("tileCountButtons"),
+      targetValue: document.getElementById("targetValue"),
+      targetDown: document.getElementById("targetDown"),
+      targetUp: document.getElementById("targetUp"),
+      wrapToggle: document.getElementById("wrapToggle"),
+      lockBody: document.getElementById("lockBody"),
+      dependencyMatrix: document.getElementById("dependencyMatrix"),
+      solutionBox: document.getElementById("solutionBox"),
+      solveButton: document.getElementById("solveButton"),
+      resetButton: document.getElementById("resetButton"),
+      copyButton: document.getElementById("copyButton"),
+      copyStatus: document.getElementById("copyStatus"),
+      summary: document.getElementById("summary"),
+      positionText: document.getElementById("positionText")
+    };
+
+    function createEffects(tileCount) {
+      return Array.from({ length: tileCount }, () => Array(tileCount).fill(0));
+    }
+
+    function resizeEffects(tileCount) {
+      const next = createEffects(tileCount);
+      const max = Math.min(tileCount, state.effects.length);
+      for (let source = 0; source < max; source += 1) {
+        for (let target = 0; target < max; target += 1) {
+          next[source][target] = source === target ? 0 : state.effects[source][target];
+        }
+      }
+      state.effects = next;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function normalizePosition(value) {
+      if (state.wrap) {
+        const size = MAX_POS - MIN_POS + 1;
+        return ((value - MIN_POS) % size + size) % size + MIN_POS;
+      }
+      if (value < MIN_POS || value > MAX_POS) {
+        return null;
+      }
+      return value;
+    }
+
+    function setTileCount(tileCount) {
+      state.tileCount = tileCount;
+      while (state.positions.length < tileCount) {
+        state.positions.push(state.target);
+      }
+      state.positions = state.positions.slice(0, tileCount);
+      resizeEffects(tileCount);
+      clearSolution();
+      render();
+    }
+
+    function changePosition(tile, delta) {
+      const next = normalizePosition(state.positions[tile] + delta);
+      if (next === null) {
+        return;
+      }
+      state.positions[tile] = next;
+      clearSolution();
+      renderTiles();
+      renderSummary();
+    }
+
+    function cycleRelation(source, target) {
+      if (source === target) {
+        return;
+      }
+      const current = state.effects[source][target];
+      state.effects[source][target] = current === 0 ? 1 : current === 1 ? -1 : 0;
+      clearSolution();
+      renderMatrix();
+    }
+
+    function applyAction(currentState, action) {
+      const next = [...currentState];
+      const deltas = new Map([[action.tile, action.direction]]);
+
+      state.effects[action.tile].forEach((relation, target) => {
+        if (relation === 0) {
+          return;
+        }
+        deltas.set(target, (deltas.get(target) || 0) + action.direction * relation);
+      });
+
+      for (const [tile, delta] of deltas.entries()) {
+        const normalized = normalizePosition(next[tile] + delta);
+        if (normalized === null) {
+          return null;
+        }
+        next[tile] = normalized;
+      }
+      return next;
+    }
+
+    function keyOf(values) {
+      return values.join(",");
+    }
+
+    function solvePuzzle() {
+      const start = [...state.positions];
+      const goal = Array(state.tileCount).fill(state.target);
+      if (keyOf(start) === keyOf(goal)) {
+        return [];
+      }
+
+      const actions = [];
+      for (let tile = 0; tile < state.tileCount; tile += 1) {
+        actions.push({ tile, direction: -1 }, { tile, direction: 1 });
+      }
+
+      const queue = [start];
+      let readIndex = 0;
+      const previous = new Map();
+      previous.set(keyOf(start), { parent: null, action: null, state: start });
+
+      while (readIndex < queue.length) {
+        const current = queue[readIndex];
+        readIndex += 1;
+
+        for (const action of actions) {
+          const candidate = applyAction(current, action);
+          if (!candidate) {
+            continue;
+          }
+
+          const candidateKey = keyOf(candidate);
+          if (previous.has(candidateKey)) {
+            continue;
+          }
+
+          previous.set(candidateKey, {
+            parent: keyOf(current),
+            action,
+            state: candidate
+          });
+
+          if (candidateKey === keyOf(goal)) {
+            return reconstructSolution(candidateKey, previous);
+          }
+
+          queue.push(candidate);
+        }
+      }
+
+      return null;
+    }
+
+    function reconstructSolution(goalKey, previous) {
+      const actions = [];
+      let cursor = goalKey;
+
+      while (cursor) {
+        const item = previous.get(cursor);
+        if (!item || !item.action) {
+          break;
+        }
+        actions.push(item.action);
+        cursor = item.parent;
+      }
+
+      return actions.reverse();
+    }
+
+    function simulate(actions) {
+      const states = [[...state.positions]];
+      let current = [...state.positions];
+      for (const action of actions) {
+        current = applyAction(current, action);
+        states.push(current);
+      }
+      return states;
+    }
+
+    function describeAction(action) {
+      const direction = action.direction > 0 ? "+1" : "-1";
+      return `płytka ${action.tile + 1}: ${direction}`;
+    }
+
+    function renderSolution(solution) {
+      if (solution === null) {
+        state.lastSolutionText = "Brak rozwiązania dla podanych pozycji i zależności.";
+        els.solutionBox.innerHTML = `<div class="error-result">${state.lastSolutionText}</div>`;
+        return;
+      }
+
+      if (solution.length === 0) {
+        state.lastSolutionText = "Zamek jest już rozwiązany.";
+        els.solutionBox.innerHTML = `<div class="empty-result">${state.lastSolutionText}</div>`;
+        return;
+      }
+
+      const states = simulate(solution);
+      const stepText = solution.map((action, index) => `${index + 1}. ${describeAction(action)}`);
+      const stateText = states.map((values, index) => `${index === 0 ? "start" : "po " + index}: ${values.join(",")}`);
+      state.lastSolutionText = [
+        `Optymalne rozwiązanie: ${solution.length} ruchów`,
+        ...stepText,
+        "",
+        "Stany:",
+        ...stateText,
+        "",
+        `Cel: ${Array(state.tileCount).fill(state.target).join(",")}`
+      ].join("\n");
+
+      const steps = solution.map((action) => {
+        const dirClass = action.direction > 0 ? "same" : "opposite";
+        const dir = action.direction > 0 ? "+1" : "-1";
+        return `<li><span class="step-action"><span class="pill">P${action.tile + 1}</span><span>${dir}</span></span></li>`;
+      }).join("");
+
+      const rows = states.map((values, index) => {
+        const label = index === 0 ? "start" : `po ${index}`;
+        return `<div class="state-row"><span>${label}</span><span>${values.join(",")}</span></div>`;
+      }).join("");
+
+      els.solutionBox.innerHTML = `
+        <ol class="steps">${steps}</ol>
+        <div class="states">${rows}</div>
+      `;
+    }
+
+    function clearSolution() {
+      state.lastSolutionText = "";
+      els.copyStatus.textContent = "";
+      els.solutionBox.innerHTML = '<div class="empty-result">Ustaw pozycje i zależności, potem kliknij „Rozwiąż”.</div>';
+    }
+
+    function renderTileCountButtons() {
+      els.tileCountButtons.innerHTML = "";
+      for (let count = MIN_TILES; count <= MAX_TILES; count += 1) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = String(count);
+        button.className = count === state.tileCount ? "active" : "";
+        button.addEventListener("click", () => setTileCount(count));
+        els.tileCountButtons.appendChild(button);
+      }
+    }
+
+    function renderTiles() {
+      els.lockBody.style.setProperty("--tile-count", state.tileCount);
+      els.lockBody.innerHTML = "";
+
+      for (let tile = 0; tile < state.tileCount; tile += 1) {
+        const column = document.createElement("div");
+        column.className = "tile-column";
+
+        const label = document.createElement("div");
+        label.className = "tile-label";
+        label.textContent = `Płytka ${tile + 1}`;
+        column.appendChild(label);
+
+        const rail = document.createElement("div");
+        rail.className = "rail";
+        for (let pos = MAX_POS; pos >= MIN_POS; pos -= 1) {
+          const slot = document.createElement("button");
+          slot.type = "button";
+          slot.className = "slot";
+          if (pos === state.target) {
+            slot.classList.add("target");
+          }
+          if (pos === state.positions[tile]) {
+            slot.classList.add("current");
+          }
+          slot.textContent = String(pos);
+          slot.title = `Ustaw płytkę ${tile + 1} na pozycję ${pos}`;
+          slot.addEventListener("click", () => {
+            state.positions[tile] = pos;
+            clearSolution();
+            renderTiles();
+            renderSummary();
+          });
+          rail.appendChild(slot);
+        }
+        column.appendChild(rail);
+
+        const controls = document.createElement("div");
+        controls.className = "tile-controls";
+        const down = document.createElement("button");
+        down.type = "button";
+        down.textContent = "-";
+        down.title = `Zmniejsz pozycję płytki ${tile + 1}`;
+        down.addEventListener("click", () => changePosition(tile, -1));
+        const up = document.createElement("button");
+        up.type = "button";
+        up.textContent = "+";
+        up.title = `Zwiększ pozycję płytki ${tile + 1}`;
+        up.addEventListener("click", () => changePosition(tile, 1));
+        controls.append(down, up);
+        column.appendChild(controls);
+
+        els.lockBody.appendChild(column);
+      }
+    }
+
+    function renderMatrix() {
+      let html = "<thead><tr><th>rusz</th>";
+      for (let target = 0; target < state.tileCount; target += 1) {
+        html += `<th>P${target + 1}</th>`;
+      }
+      html += "</tr></thead><tbody>";
+
+      for (let source = 0; source < state.tileCount; source += 1) {
+        html += `<tr><th>P${source + 1}</th>`;
+        for (let target = 0; target < state.tileCount; target += 1) {
+          if (source === target) {
+            html += '<td><button class="relation-button disabled" type="button" disabled>auto</button></td>';
+            continue;
+          }
+
+          const value = state.effects[source][target];
+          const label = value === 1 ? "+" : value === -1 ? "-" : "brak";
+          const cls = value === 1 ? "same" : value === -1 ? "opposite" : "";
+          html += `<td><button class="relation-button ${cls}" type="button" data-source="${source}" data-target="${target}">${label}</button></td>`;
+        }
+        html += "</tr>";
+      }
+      html += "</tbody>";
+      els.dependencyMatrix.innerHTML = html;
+
+      els.dependencyMatrix.querySelectorAll("[data-source]").forEach((button) => {
+        button.addEventListener("click", () => {
+          cycleRelation(Number(button.dataset.source), Number(button.dataset.target));
+        });
+      });
+    }
+
+    function renderSummary() {
+      els.summary.textContent = `${state.tileCount} płytki`;
+      els.targetValue.textContent = String(state.target);
+      els.wrapToggle.checked = state.wrap;
+      els.positionText.textContent = `Aktualne pozycje: ${state.positions.join(",")} | Cel: ${Array(state.tileCount).fill(state.target).join(",")}`;
+    }
+
+    function render() {
+      renderTileCountButtons();
+      renderTiles();
+      renderMatrix();
+      renderSummary();
+    }
+
+    els.targetDown.addEventListener("click", () => {
+      state.target = clamp(state.target - 1, MIN_POS, MAX_POS);
+      clearSolution();
+      renderTiles();
+      renderSummary();
+    });
+
+    els.targetUp.addEventListener("click", () => {
+      state.target = clamp(state.target + 1, MIN_POS, MAX_POS);
+      clearSolution();
+      renderTiles();
+      renderSummary();
+    });
+
+    els.wrapToggle.addEventListener("change", () => {
+      state.wrap = els.wrapToggle.checked;
+      clearSolution();
+      renderSummary();
+    });
+
+    els.solveButton.addEventListener("click", () => {
+      els.copyStatus.textContent = "";
+      renderSolution(solvePuzzle());
+    });
+
+    els.resetButton.addEventListener("click", () => {
+      state.tileCount = 4;
+      state.positions = [1, 2, 3, 4];
+      state.target = 4;
+      state.wrap = false;
+      state.effects = createEffects(4);
+      clearSolution();
+      render();
+    });
+
+    els.copyButton.addEventListener("click", async () => {
+      if (!state.lastSolutionText) {
+        els.copyStatus.textContent = "Najpierw wylicz rozwiązanie.";
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(state.lastSolutionText);
+        els.copyStatus.textContent = "Wynik skopiowany do schowka.";
+      } catch {
+        els.copyStatus.textContent = "Nie udało się skopiować. Zaznacz wynik ręcznie.";
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
