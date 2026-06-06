@@ -324,6 +324,14 @@
       font-weight: 850;
     }
 
+    .slot.preview {
+      color: #081411;
+      border-color: #9fe0d4;
+      background: linear-gradient(180deg, #bdf0e7, #6baea5);
+      box-shadow: 0 0 0 2px rgba(143, 199, 189, 0.35);
+      font-weight: 900;
+    }
+
     .tile-controls {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -429,8 +437,30 @@
       color: var(--text);
     }
 
+    .steps li.active {
+      color: #11100e;
+      background: rgba(143, 199, 189, 0.88);
+      margin-left: -42px;
+      padding-left: 42px;
+      padding-right: 8px;
+    }
+
     .steps li:last-child {
       border-bottom: 0;
+    }
+
+    .step-preview {
+      width: 100%;
+      border: 0;
+      padding: 0;
+      color: inherit;
+      background: transparent;
+      text-align: left;
+    }
+
+    .step-preview:hover {
+      border-color: transparent;
+      background: transparent;
     }
 
     .step-action {
@@ -457,6 +487,10 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 650;
+    }
+
+    .steps li.active .key-hint {
+      color: #12352f;
     }
 
     .states {
@@ -637,6 +671,8 @@
       positions: [1, 2, 3, 4],
       target: 4,
       effects: createEffects(4),
+      solutionStates: [],
+      previewStep: null,
       lastSolutionText: ""
     };
 
@@ -825,18 +861,30 @@
 
     function renderSolution(solution) {
       if (solution === null) {
+        state.solutionStates = [];
+        state.previewStep = null;
+        renderTiles();
+        renderSummary();
         state.lastSolutionText = "Brak rozwiązania dla podanych pozycji i zależności.";
         els.solutionBox.innerHTML = `<div class="error-result">${state.lastSolutionText}</div>`;
         return;
       }
 
       if (solution.length === 0) {
+        state.solutionStates = [[...state.positions]];
+        state.previewStep = null;
+        renderTiles();
+        renderSummary();
         state.lastSolutionText = "Zamek jest już rozwiązany.";
         els.solutionBox.innerHTML = `<div class="empty-result">${state.lastSolutionText}</div>`;
         return;
       }
 
       const states = simulate(solution);
+      state.solutionStates = states;
+      state.previewStep = null;
+      renderTiles();
+      renderSummary();
       const stepText = solution.map((action, index) => `${index + 1}. ${describeAction(action)}`);
       const stateText = states.map((values, index) => `${index === 0 ? "start" : "po " + index}: ${values.join(",")}`);
       state.lastSolutionText = [
@@ -849,10 +897,10 @@
         `Cel: ${Array(state.tileCount).fill(state.target).join(",")}`
       ].join("\n");
 
-      const steps = solution.map((action) => {
+      const steps = solution.map((action, index) => {
         const dir = action.direction > 0 ? "+1" : "-1";
         const key = keyForAction(action);
-        return `<li><span class="step-action"><span class="pill">P${action.tile + 1}</span><span>${dir}</span><span class="key-hint">naciśnij ${key}</span></span></li>`;
+        return `<li data-step-item="${index + 1}"><button class="step-preview" type="button" data-preview-step="${index + 1}"><span class="step-action"><span class="pill">P${action.tile + 1}</span><span>${dir}</span><span class="key-hint">naciśnij ${key}</span></span></button></li>`;
       }).join("");
 
       const rows = states.map((values, index) => {
@@ -864,12 +912,29 @@
         <ol class="steps">${steps}</ol>
         <div class="states">${rows}</div>
       `;
+
+      els.solutionBox.querySelectorAll("[data-preview-step]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.previewStep = Number(button.dataset.previewStep);
+          renderTiles();
+          renderSummary();
+          renderStepSelection();
+        });
+      });
     }
 
     function clearSolution() {
       state.lastSolutionText = "";
+      state.solutionStates = [];
+      state.previewStep = null;
       els.copyStatus.textContent = "";
       els.solutionBox.innerHTML = '<div class="empty-result">Ustaw pozycje i zależności, potem kliknij „Rozwiąż”.</div>';
+    }
+
+    function renderStepSelection() {
+      els.solutionBox.querySelectorAll("[data-step-item]").forEach((item) => {
+        item.classList.toggle("active", Number(item.dataset.stepItem) === state.previewStep);
+      });
     }
 
     function renderTileCountButtons() {
@@ -887,6 +952,7 @@
     function renderTiles() {
       els.lockBody.style.setProperty("--tile-count", state.tileCount);
       els.lockBody.innerHTML = "";
+      const previewState = state.previewStep === null ? null : state.solutionStates[state.previewStep];
 
       for (let tile = 0; tile < state.tileCount; tile += 1) {
         const column = document.createElement("div");
@@ -908,6 +974,9 @@
           }
           if (pos === state.positions[tile]) {
             slot.classList.add("current");
+          }
+          if (previewState && pos === previewState[tile]) {
+            slot.classList.add("preview");
           }
           slot.textContent = String(pos);
           slot.title = `Ustaw płytkę ${tile + 1} na pozycję ${pos}`;
@@ -975,7 +1044,10 @@
     function renderSummary() {
       els.summary.textContent = `${state.tileCount} płytki`;
       els.targetValue.textContent = String(state.target);
-      els.positionText.textContent = `Aktualne pozycje: ${state.positions.join(",")} | Cel: ${Array(state.tileCount).fill(state.target).join(",")}`;
+      const preview = state.previewStep === null
+        ? ""
+        : ` | Podgląd po kroku ${state.previewStep}: ${state.solutionStates[state.previewStep].join(",")}`;
+      els.positionText.textContent = `Aktualne pozycje: ${state.positions.join(",")} | Cel: ${Array(state.tileCount).fill(state.target).join(",")}${preview}`;
     }
 
     function render() {
@@ -1009,6 +1081,8 @@
       state.positions = [1, 2, 3, 4];
       state.target = 4;
       state.effects = createEffects(4);
+      state.solutionStates = [];
+      state.previewStep = null;
       clearSolution();
       render();
     });
