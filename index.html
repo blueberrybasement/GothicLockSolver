@@ -3,8 +3,6 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2755288210544053"
-     crossorigin="anonymous"></script>
   <title>Lock Solver Gothic</title>
   <style>
     :root {
@@ -739,6 +737,7 @@
         matrixHint: "Wiersz to poruszana płytka. Kolumna to płytka, która reaguje. + oznacza ten sam kierunek, - przeciwny.",
         solutionTitle: "Rozwiązanie",
         emptySolution: "Ustaw pozycje i zależności, potem kliknij „Rozwiąż”.",
+        calculating: "Liczenie rozwiązania...",
         noSolution: "Brak rozwiązania dla podanych pozycji i zależności.",
         alreadySolved: "Zamek jest już rozwiązany.",
         optimal: "Optymalne rozwiązanie: {moves} ruchów",
@@ -780,6 +779,7 @@
         matrixHint: "A row is the moved plate. A column is the plate that reacts. + means the same direction, - means the opposite direction.",
         solutionTitle: "Solution",
         emptySolution: "Set positions and relations, then click “Solve”.",
+        calculating: "Calculating solution...",
         noSolution: "No solution for the given positions and relations.",
         alreadySolved: "The lock is already solved.",
         optimal: "Optimal solution: {moves} moves",
@@ -821,6 +821,7 @@
         matrixHint: "Die Zeile ist die bewegte Platte. Die Spalte ist die Platte, die reagiert. + bedeutet gleiche Richtung, - bedeutet Gegenrichtung.",
         solutionTitle: "Lösung",
         emptySolution: "Stelle Positionen und Abhängigkeiten ein, dann klicke auf „Lösen”.",
+        calculating: "Lösung wird berechnet...",
         noSolution: "Keine Lösung für die angegebenen Positionen und Abhängigkeiten.",
         alreadySolved: "Das Schloss ist bereits gelöst.",
         optimal: "Optimale Lösung: {moves} Züge",
@@ -862,6 +863,7 @@
         matrixHint: "Строка — пластина, которую двигают. Столбец — пластина, которая реагирует. + значит то же направление, - значит противоположное.",
         solutionTitle: "Решение",
         emptySolution: "Задай позиции и связи, затем нажми «Решить».",
+        calculating: "Вычисляю решение...",
         noSolution: "Нет решения для заданных позиций и связей.",
         alreadySolved: "Замок уже решен.",
         optimal: "Оптимальное решение: {moves} ходов",
@@ -900,8 +902,10 @@
       return SUPPORTED_LANGS.includes(browserLang) ? browserLang : "en";
     }
 
+    let currentLang = detectLanguage();
+
     function t(key, vars = {}) {
-      const dictionary = translations[state.lang] || translations.en;
+      const dictionary = translations[currentLang] || translations.en;
       const template = dictionary[key] || translations.en[key] || key;
       return template.replace(/\{(\w+)\}/g, (_, name) => vars[name] ?? "");
     }
@@ -915,7 +919,6 @@
       solutionActions: [],
       solutionMode: "empty",
       previewStep: null,
-      lang: detectLanguage(),
       lastSolutionText: ""
     };
 
@@ -1019,7 +1022,11 @@
       return values.join(",");
     }
 
-    function solvePuzzle() {
+    function yieldToBrowser() {
+      return new Promise((resolve) => setTimeout(resolve, 0));
+    }
+
+    async function solvePuzzle() {
       const start = [...state.positions];
       const goal = Array(state.tileCount).fill(state.target);
       if (keyOf(start) === keyOf(goal)) {
@@ -1039,6 +1046,10 @@
       while (readIndex < queue.length) {
         const current = queue[readIndex];
         readIndex += 1;
+
+        if (readIndex % 1500 === 0) {
+          await yieldToBrowser();
+        }
 
         for (const action of actions) {
           const candidate = applyAction(current, action);
@@ -1325,12 +1336,12 @@
     }
 
     function translateStatic() {
-      document.documentElement.lang = state.lang;
+      document.documentElement.lang = currentLang;
       document.querySelectorAll("[data-i18n]").forEach((element) => {
         element.textContent = t(element.dataset.i18n);
       });
       els.languageSwitch.querySelectorAll("[data-lang]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.lang === state.lang);
+        button.classList.toggle("active", button.dataset.lang === currentLang);
       });
     }
 
@@ -1364,9 +1375,9 @@
     }
 
     function setLanguage(lang) {
-      state.lang = SUPPORTED_LANGS.includes(lang) ? lang : "en";
+      currentLang = SUPPORTED_LANGS.includes(lang) ? lang : "en";
       try {
-        localStorage.setItem("lockSolverLanguage", state.lang);
+        localStorage.setItem("lockSolverLanguage", currentLang);
       } catch {
         // Language switching should still work when storage is blocked.
       }
@@ -1374,6 +1385,56 @@
       renderTileCountButtons();
       renderMatrix();
       refreshSolutionLanguage();
+    }
+
+    function loadAdsenseAfterUi() {
+      setTimeout(() => {
+        try {
+          const isLocalPage = location.protocol === "file:"
+            || location.hostname === "localhost"
+            || location.hostname === "127.0.0.1";
+          if (isLocalPage || location.protocol !== "https:") {
+            return;
+          }
+          if (!document.head) {
+            return;
+          }
+          const script = document.createElement("script");
+          script.async = true;
+          script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2755288210544053";
+          script.crossOrigin = "anonymous";
+          document.head.appendChild(script);
+        } catch {
+          // Ads must not affect the solver UI.
+        }
+      }, 1000);
+    }
+
+    function loadAnalyticsAfterUi() {
+      setTimeout(() => {
+        try {
+          const isLocalPage = location.protocol === "file:"
+            || location.hostname === "localhost"
+            || location.hostname === "127.0.0.1";
+          if (isLocalPage || location.protocol !== "https:") {
+            return;
+          }
+
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function gtag() {
+            window.dataLayer.push(arguments);
+          };
+          window.gtag("js", new Date());
+          window.gtag("config", "G-84MV2FJ349");
+
+          const script = document.createElement("script");
+          script.async = true;
+          script.src = "https://www.googletagmanager.com/gtag/js?id=G-84MV2FJ349";
+          document.head.appendChild(script);
+        } catch {
+          // Analytics must not affect the solver UI.
+        }
+      }, 1200);
     }
 
     function render() {
@@ -1384,57 +1445,86 @@
       renderSummary();
     }
 
-    els.targetDown.addEventListener("click", () => {
-      state.target = clamp(state.target - 1, MIN_POS, MAX_POS);
-      clearSolution();
-      renderTiles();
-      renderSummary();
-    });
+    function bindEvents() {
+      els.targetDown.addEventListener("click", () => {
+        state.target = clamp(state.target - 1, MIN_POS, MAX_POS);
+        clearSolution();
+        renderTiles();
+        renderSummary();
+      });
 
-    els.targetUp.addEventListener("click", () => {
-      state.target = clamp(state.target + 1, MIN_POS, MAX_POS);
-      clearSolution();
-      renderTiles();
-      renderSummary();
-    });
+      els.targetUp.addEventListener("click", () => {
+        state.target = clamp(state.target + 1, MIN_POS, MAX_POS);
+        clearSolution();
+        renderTiles();
+        renderSummary();
+      });
 
-    els.solveButton.addEventListener("click", () => {
-      els.copyStatus.textContent = "";
-      renderSolution(solvePuzzle());
-    });
+      els.solveButton.addEventListener("click", () => {
+        els.copyStatus.textContent = "";
+        els.solveButton.disabled = true;
+        els.solutionBox.innerHTML = `<div class="empty-result">${t("calculating")}</div>`;
+        yieldToBrowser()
+          .then(() => solvePuzzle())
+          .then((solution) => renderSolution(solution))
+          .catch((error) => {
+            state.solutionStates = [];
+            state.solutionActions = [];
+            state.solutionMode = "none";
+            state.previewStep = null;
+            state.lastSolutionText = String(error && error.message ? error.message : error);
+            els.solutionBox.innerHTML = `<div class="error-result">${state.lastSolutionText}</div>`;
+          })
+          .finally(() => {
+            els.solveButton.disabled = false;
+          });
+      });
 
-    els.resetButton.addEventListener("click", () => {
-      state.tileCount = 4;
-      state.positions = [1, 2, 3, 4];
-      state.target = 4;
-      state.effects = createEffects(4);
-      state.solutionStates = [];
-      state.solutionActions = [];
-      state.solutionMode = "empty";
-      state.previewStep = null;
-      clearSolution();
-      render();
-    });
+      els.resetButton.addEventListener("click", () => {
+        state.tileCount = 4;
+        state.positions = [1, 2, 3, 4];
+        state.target = 4;
+        state.effects = createEffects(4);
+        state.solutionStates = [];
+        state.solutionActions = [];
+        state.solutionMode = "empty";
+        state.previewStep = null;
+        clearSolution();
+        render();
+      });
 
-    els.copyButton.addEventListener("click", async () => {
-      if (!state.lastSolutionText) {
-        els.copyStatus.textContent = t("copyFirst");
-        return;
-      }
+      els.copyButton.addEventListener("click", async () => {
+        if (!state.lastSolutionText) {
+          els.copyStatus.textContent = t("copyFirst");
+          return;
+        }
 
+        try {
+          await navigator.clipboard.writeText(state.lastSolutionText);
+          els.copyStatus.textContent = t("copied");
+        } catch {
+          els.copyStatus.textContent = t("copyFailed");
+        }
+      });
+
+      els.languageSwitch.querySelectorAll("[data-lang]").forEach((button) => {
+        button.addEventListener("click", () => setLanguage(button.dataset.lang));
+      });
+    }
+
+    function startApp() {
       try {
-        await navigator.clipboard.writeText(state.lastSolutionText);
-        els.copyStatus.textContent = t("copied");
-      } catch {
-        els.copyStatus.textContent = t("copyFailed");
+        bindEvents();
+        render();
+        loadAdsenseAfterUi();
+        loadAnalyticsAfterUi();
+      } catch (error) {
+        const message = String(error && error.message ? error.message : error);
+        els.solutionBox.innerHTML = `<div class="error-result">Startup error: ${message}</div>`;
       }
-    });
+    }
 
-    els.languageSwitch.querySelectorAll("[data-lang]").forEach((button) => {
-      button.addEventListener("click", () => setLanguage(button.dataset.lang));
-    });
-
-    render();
+    startApp();
   </script>
 </body>
 </html>
