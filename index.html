@@ -477,8 +477,8 @@
       height: 24px;
       padding: 0 8px;
       border-radius: 999px;
-      color: #11100e;
-      background: var(--accent);
+      color: var(--pill-fg, #11100e);
+      background: var(--pill-bg, var(--accent));
       font-size: 12px;
       font-weight: 850;
     }
@@ -854,6 +854,21 @@
       return action.direction > 0 ? "A" : "D";
     }
 
+    const tileColors = [
+      { bg: "#d7b36a", fg: "#11100e" },
+      { bg: "#8fc7bd", fg: "#081411" },
+      { bg: "#d68a73", fg: "#1c0f0a" },
+      { bg: "#9fb6e8", fg: "#0c1220" },
+      { bg: "#caa0df", fg: "#180f1e" },
+      { bg: "#a8c76b", fg: "#101608" },
+      { bg: "#e0a15f", fg: "#1a1007" }
+    ];
+
+    function tileColorStyle(tile) {
+      const color = tileColors[tile % tileColors.length];
+      return `--pill-bg: ${color.bg}; --pill-fg: ${color.fg};`;
+    }
+
     function describeAction(action) {
       const direction = action.direction > 0 ? "+1" : "-1";
       return `płytka ${action.tile + 1}: ${direction}, naciśnij ${keyForAction(action)}`;
@@ -900,7 +915,7 @@
       const steps = solution.map((action, index) => {
         const dir = action.direction > 0 ? "+1" : "-1";
         const key = keyForAction(action);
-        return `<li data-step-item="${index + 1}"><button class="step-preview" type="button" data-preview-step="${index + 1}"><span class="step-action"><span class="pill">P${action.tile + 1}</span><span>${dir}</span><span class="key-hint">naciśnij ${key}</span></span></button></li>`;
+        return `<li data-step-item="${index + 1}"><button class="step-preview" type="button" data-preview-step="${index + 1}"><span class="step-action"><span class="pill" style="${tileColorStyle(action.tile)}">P${action.tile + 1}</span><span>${dir}</span><span class="key-hint">naciśnij ${key}</span></span></button></li>`;
       }).join("");
 
       const rows = states.map((values, index) => {
