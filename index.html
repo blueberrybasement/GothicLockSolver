@@ -570,6 +570,70 @@
       font-size: 12px;
     }
 
+    .self-promo {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .self-promo-link {
+      display: block;
+      overflow: hidden;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      color: inherit;
+      background: #14120f;
+      text-decoration: none;
+      transition: border-color 120ms ease, transform 120ms ease;
+    }
+
+    .self-promo-link:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .self-promo img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1024 / 500;
+      object-fit: cover;
+      background: #0e0d0c;
+    }
+
+    .self-promo-copy {
+      display: grid;
+      gap: 7px;
+      padding: 11px 12px 12px;
+    }
+
+    .self-promo-kicker {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+
+    .self-promo-title {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .self-promo-cta {
+      justify-self: start;
+      min-height: 30px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0 10px;
+      border: 1px solid #e1c17a;
+      border-radius: 6px;
+      color: #17120b;
+      background: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
     @media (max-width: 1060px) {
       main {
         grid-template-columns: 1fr;
@@ -692,6 +756,16 @@
               <li data-i18n="instruction4">Kliknij krok rozwiązania, żeby podświetlić układ zamka po tym kroku.</li>
             </ol>
           </div>
+          <aside class="self-promo" aria-label="Advertisement">
+            <a class="self-promo-link" href="https://play.google.com/store/apps/details?id=com.BlueberryBasement.MeetingMayhem" target="_blank" rel="noopener">
+              <img src="assets/meeting-mayhem-google-play.jpg" alt="Meeting Mayhem on Google Play" loading="lazy">
+              <span class="self-promo-copy">
+                <span class="self-promo-kicker" data-i18n="promoKicker">From the developer</span>
+                <span class="self-promo-title" data-i18n="promoTitle">Meeting Mayhem on Google Play</span>
+                <span class="self-promo-cta" data-i18n="promoCta">View game</span>
+              </span>
+            </a>
+          </aside>
         </div>
       </section>
 
@@ -790,7 +864,10 @@
         preview: " | Podgląd po kroku {step}: {values}",
         copyFirst: "Najpierw wylicz rozwiązanie.",
         copied: "Wynik skopiowany do schowka.",
-        copyFailed: "Nie udało się skopiować. Zaznacz wynik ręcznie."
+        copyFailed: "Nie udało się skopiować. Zaznacz wynik ręcznie.",
+        promoKicker: "Od autora",
+        promoTitle: "Meeting Mayhem w Google Play",
+        promoCta: "Zobacz grę"
       },
       en: {
         resetButton: "Reset",
@@ -837,7 +914,10 @@
         preview: " | Preview after step {step}: {values}",
         copyFirst: "Calculate a solution first.",
         copied: "Result copied to clipboard.",
-        copyFailed: "Copy failed. Select the result manually."
+        copyFailed: "Copy failed. Select the result manually.",
+        promoKicker: "From the developer",
+        promoTitle: "Meeting Mayhem on Google Play",
+        promoCta: "View game"
       },
       de: {
         resetButton: "Zurücksetzen",
@@ -884,7 +964,10 @@
         preview: " | Vorschau nach Schritt {step}: {values}",
         copyFirst: "Berechne zuerst eine Lösung.",
         copied: "Ergebnis in die Zwischenablage kopiert.",
-        copyFailed: "Kopieren fehlgeschlagen. Markiere das Ergebnis manuell."
+        copyFailed: "Kopieren fehlgeschlagen. Markiere das Ergebnis manuell.",
+        promoKicker: "Vom Entwickler",
+        promoTitle: "Meeting Mayhem bei Google Play",
+        promoCta: "Spiel ansehen"
       },
       ru: {
         resetButton: "Сброс",
@@ -931,7 +1014,10 @@
         preview: " | Просмотр после шага {step}: {values}",
         copyFirst: "Сначала рассчитай решение.",
         copied: "Результат скопирован в буфер обмена.",
-        copyFailed: "Не удалось скопировать. Выдели результат вручную."
+        copyFailed: "Не удалось скопировать. Выдели результат вручную.",
+        promoKicker: "От разработчика",
+        promoTitle: "Meeting Mayhem в Google Play",
+        promoCta: "Открыть игру"
       }
     };
 
