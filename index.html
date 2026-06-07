@@ -1,9 +1,32 @@
 <!doctype html>
-<html lang="pl">
+<html id="top" lang="pl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lock Solver Gothic</title>
+  <meta name="description" content="Lock Solver Gothic is an interactive puzzle solver with a practical guide for modelling linked plates, target positions, and shortest move sequences.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#11100e">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Lock Solver Gothic - puzzle lock solver and guide">
+  <meta property="og:description" content="Set plate positions, define movement dependencies, and learn how the solver finds the shortest sequence for a Gothic lock puzzle.">
+  <meta property="og:image" content="assets/meeting-mayhem-google-play.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Lock Solver Gothic - puzzle lock solver and guide</title>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Lock Solver Gothic",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Web browser",
+      "description": "Interactive solver and guide for Gothic linked plate lock puzzles.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  </script>
   <style>
     :root {
       --bg: #11100e;
@@ -23,6 +46,11 @@
 
     * {
       box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 86px;
     }
 
     body {
@@ -64,6 +92,9 @@
     }
 
     header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -81,6 +112,15 @@
       letter-spacing: 0;
     }
 
+    .brand-link {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand-link:hover {
+      color: var(--accent);
+    }
+
     .header-actions {
       display: flex;
       align-items: center;
@@ -94,6 +134,33 @@
       gap: 12px;
       flex-wrap: wrap;
       justify-content: flex-end;
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .site-nav a {
+      min-height: 32px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0 10px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .site-nav a:hover {
+      border-color: var(--line-soft);
+      color: var(--text);
+      background: rgba(255,255,255,0.035);
     }
 
     .language-switch {
@@ -634,6 +701,129 @@
       font-weight: 800;
     }
 
+    .publisher-content,
+    .site-footer {
+      border-top: 1px solid var(--line-soft);
+      background: rgba(12, 11, 10, 0.82);
+    }
+
+    .content-wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    .content-kicker {
+      margin: 0 0 10px;
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .publisher-content h2,
+    .publisher-content h3 {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .publisher-content h2 {
+      max-width: 760px;
+      font-size: 30px;
+    }
+
+    .publisher-content h3 {
+      font-size: 18px;
+    }
+
+    .publisher-content p,
+    .publisher-content li,
+    .site-footer p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .lead {
+      max-width: 850px;
+      margin: 16px 0 0;
+      font-size: 16px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 34px;
+      margin-top: 34px;
+    }
+
+    .content-block {
+      min-width: 0;
+      padding-top: 18px;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .content-block p {
+      margin: 10px 0 0;
+    }
+
+    .content-block ol,
+    .content-block ul {
+      margin: 12px 0 0;
+      padding-left: 22px;
+    }
+
+    .content-block li + li {
+      margin-top: 8px;
+    }
+
+    .trust-section {
+      background: rgba(22, 19, 16, 0.78);
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 26px;
+      margin-top: 32px;
+    }
+
+    .policy-text {
+      margin-top: 34px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .policy-text h3 + p {
+      margin-top: 10px;
+    }
+
+    .site-footer .content-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 24px 0;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
     @media (max-width: 1060px) {
       main {
         grid-template-columns: 1fr;
@@ -642,6 +832,11 @@
       .dependency-wrap,
       .solution-box {
         max-height: none;
+      }
+
+      .content-grid,
+      .trust-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -659,6 +854,10 @@
       .header-tools {
         align-items: stretch;
         flex-direction: column;
+      }
+
+      .site-nav {
+        justify-content: flex-start;
       }
 
       .language-switch {
@@ -695,13 +894,33 @@
         grid-template-columns: repeat(7, minmax(30px, 1fr));
         padding: 8px;
       }
+
+      .content-wrap {
+        width: min(100% - 20px, 1120px);
+        padding: 36px 0;
+      }
+
+      .publisher-content h2 {
+        font-size: 24px;
+      }
+
+      .site-footer .content-wrap {
+        align-items: flex-start;
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <header>
-      <h1>Lock Solver Gothic</h1>
+      <h1><a class="brand-link" href="#top">Lock Solver Gothic</a></h1>
+      <nav class="site-nav" aria-label="Site sections">
+        <a href="#guide" data-i18n="navGuide">Guide</a>
+        <a href="#example" data-i18n="navExample">Example</a>
+        <a href="#about" data-i18n="navAbout">About</a>
+        <a href="#privacy" data-i18n="navPrivacy">Privacy</a>
+      </nav>
       <div class="header-tools">
         <div id="languageSwitch" class="language-switch" aria-label="Language">
           <button type="button" data-lang="pl">PL</button>
@@ -809,6 +1028,189 @@
         </div>
       </section>
     </main>
+
+    <section id="guide" class="publisher-content">
+      <div class="content-wrap">
+        <p class="content-kicker" data-i18n="guideKicker">Puzzle guide</p>
+        <h2 data-i18n="guideTitle">How to model a Gothic plate lock before pressing Solve</h2>
+        <p class="lead" data-i18n="guideLead">
+          Lock Solver Gothic is built for puzzles where several sliding or rotating plates react to one move.
+          The solver is useful when the lock is not a simple one-plate-at-a-time mechanism: moving one plate can
+          push another plate in the same direction, pull it in the opposite direction, or leave it unchanged.
+        </p>
+
+        <div class="content-grid">
+          <article class="content-block">
+            <h3 data-i18n="guideStep1Title">1. Record the current plate positions</h3>
+            <p data-i18n="guideStep1Body">
+              Treat every hole or notch as a numbered position from 1 to 7. Start with the visible state in the
+              game or puzzle, then use the plus and minus controls in the middle panel until each row matches what
+              you see on screen.
+            </p>
+          </article>
+
+          <article class="content-block">
+            <h3 data-i18n="guideStep2Title">2. Set the target position</h3>
+            <p data-i18n="guideStep2Body">
+              Many Gothic lock puzzles use the central position as the goal, so position 4 is selected by default.
+              If your puzzle clearly highlights another target hole, change the target before solving.
+            </p>
+          </article>
+
+          <article class="content-block">
+            <h3 data-i18n="guideStep3Title">3. Map plate dependencies</h3>
+            <p data-i18n="guideStep3Body">
+              The relation matrix is the important part. A row means the plate you move. A column means the plate
+              that reacts. Use + when the reacting plate follows the same direction, - when it moves the opposite
+              way, and none when there is no reaction.
+            </p>
+          </article>
+
+          <article class="content-block">
+            <h3 data-i18n="guideStep4Title">4. Read the shortest sequence</h3>
+            <p data-i18n="guideStep4Body">
+              After solving, the result lists the shortest sequence found for the model you entered. Click any step
+              to preview the state after that move and compare it with the actual puzzle before continuing.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="example" class="publisher-content">
+      <div class="content-wrap">
+        <p class="content-kicker" data-i18n="exampleKicker">Worked example</p>
+        <h2 data-i18n="exampleTitle">A practical way to identify relations without guessing</h2>
+        <div class="content-grid">
+          <article class="content-block">
+            <h3 data-i18n="exampleTestTitle">Test one plate at a time</h3>
+            <ol>
+              <li data-i18n="exampleStep1">Write down the starting positions of every plate.</li>
+              <li data-i18n="exampleStep2">Move only plate 1 by one step in the direction you call +.</li>
+              <li data-i18n="exampleStep3">Compare every other plate with the starting state.</li>
+              <li data-i18n="exampleStep4">Enter +, -, or none in row 1 of the matrix.</li>
+              <li data-i18n="exampleStep5">Undo the move if possible, then repeat the same process for the next plate.</li>
+            </ol>
+          </article>
+
+          <article class="content-block">
+            <h3 data-i18n="exampleWrongTitle">When the answer looks wrong</h3>
+            <p data-i18n="exampleWrongBody1">
+              Most wrong answers come from one reversed convention. If the puzzle uses the opposite visual direction,
+              you do not need a new algorithm: either reverse the meaning of + and - in your notes, or use the opposite
+              direction from each listed move.
+            </p>
+            <p data-i18n="exampleWrongBody2">
+              If the solver reports no solution, re-check whether the target position is correct and whether every
+              dependency was tested from a clean starting state.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="publisher-content">
+      <div class="content-wrap">
+        <p class="content-kicker" data-i18n="methodKicker">Method</p>
+        <h2 data-i18n="methodTitle">How the solver searches for a result</h2>
+        <div class="content-grid">
+          <article class="content-block">
+            <h3 data-i18n="methodStateTitle">State-based search</h3>
+            <p data-i18n="methodStateBody">
+              The tool represents the lock as a compact state: each plate has a position, and each possible move
+              applies the dependency rules from the matrix. The search checks reachable states until it finds a state
+              where every plate sits on the target position.
+            </p>
+          </article>
+
+          <article class="content-block">
+            <h3 data-i18n="methodShortestTitle">Why the first result is short</h3>
+            <p data-i18n="methodShortestBody">
+              Moves are explored by distance from the starting state. That means the first valid solution found is
+              the shortest sequence for the model entered into the page. If the real puzzle behaves differently, the
+              matrix needs correction rather than more random moves.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="publisher-content trust-section">
+      <div class="content-wrap">
+        <p class="content-kicker" data-i18n="aboutKicker">Publisher information</p>
+        <h2 data-i18n="aboutTitle">About Lock Solver Gothic</h2>
+        <div class="trust-grid">
+          <article class="content-block">
+            <h3 data-i18n="aboutPurposeTitle">Purpose</h3>
+            <p data-i18n="aboutPurposeBody">
+              This page is an independent utility and guide for players who want to reason through linked lock
+              puzzles instead of trying moves at random.
+            </p>
+          </article>
+
+          <article class="content-block">
+            <h3 data-i18n="aboutEditorialTitle">Editorial approach</h3>
+            <p data-i18n="aboutEditorialBody">
+              The guide explains the model used by the solver, common mistakes, and a repeatable way to collect
+              puzzle data. The tool does not require an account and does not sell user submissions.
+            </p>
+          </article>
+
+          <article class="content-block">
+            <h3 data-i18n="aboutContactTitle">Contact</h3>
+            <p>
+              <span data-i18n="aboutContactBody">For corrections, privacy questions, or feedback about the solver, contact the publisher at</span>
+              <a href="mailto:contact@blueberrybasement.com">contact@blueberrybasement.com</a>.
+            </p>
+          </article>
+        </div>
+
+        <div id="privacy" class="policy-text">
+          <p class="content-kicker" data-i18n="privacyKicker">Privacy policy</p>
+          <h3 data-i18n="privacyTitle">Data, cookies, and advertising disclosures</h3>
+          <p data-i18n="privacyBody1">
+            Lock Solver Gothic can be used without creating an account. The solver calculations run in your browser.
+            The page may use Google Analytics to understand aggregate usage and Google AdSense to display advertising
+            if ads are enabled on the production site.
+          </p>
+          <p>
+            <span data-i18n="privacyBody2">Google and its partners may use cookies, web beacons, IP addresses, device identifiers, and similar technologies to provide measurement, prevent abuse, and serve or personalize ads. You can learn how Google uses data on partner sites at</span>
+            <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener" data-i18n="privacyGooglePolicyLink">Google's partner sites policy</a>.
+          </p>
+          <p data-i18n="privacyBody3">
+            You can control cookies in your browser settings and through any consent controls shown on the site.
+            Do not send sensitive personal information through feedback email.
+          </p>
+        </div>
+
+        <div id="terms" class="policy-text">
+          <p class="content-kicker" data-i18n="termsKicker">Terms</p>
+          <h3 data-i18n="termsTitle">Use of this free puzzle tool</h3>
+          <p data-i18n="termsBody1">
+            The solver is provided as a free utility for personal puzzle solving and educational use. Results depend
+            on the positions and dependency rules entered by the user, so the publisher cannot guarantee that every
+            model matches every game or puzzle implementation.
+          </p>
+          <p data-i18n="termsBody2">
+            Do not use the page in a way that interferes with the service, attempts to manipulate advertising, or
+            violates the rules of a game, platform, or publisher that owns the puzzle you are playing.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="content-wrap">
+        <p data-i18n="footerDescription">Lock Solver Gothic - independent puzzle solver and guide.</p>
+        <div class="footer-links">
+          <a href="#guide" data-i18n="navGuide">Guide</a>
+          <a href="#about" data-i18n="navAbout">About</a>
+          <a href="#privacy" data-i18n="navPrivacy">Privacy</a>
+          <a href="#terms" data-i18n="navTerms">Terms</a>
+          <a href="mailto:contact@blueberrybasement.com" data-i18n="navContact">Contact</a>
+        </div>
+      </div>
+    </footer>
   </div>
 
   <script>
@@ -1021,6 +1423,237 @@
       }
     };
 
+    const contentTranslations = {
+      pl: {
+        pageTitle: "Lock Solver Gothic - solver i poradnik do zamków logicznych",
+        pageDescription: "Lock Solver Gothic to interaktywny solver i poradnik do modelowania powiązanych płytek, pozycji docelowych oraz najkrótszych sekwencji ruchów.",
+        navGuide: "Poradnik",
+        navExample: "Przykład",
+        navAbout: "O stronie",
+        navPrivacy: "Prywatność",
+        navTerms: "Warunki",
+        navContact: "Kontakt",
+        guideKicker: "Poradnik",
+        guideTitle: "Jak opisać zamek z płytkami z Gothic przed kliknięciem Rozwiąż",
+        guideLead: "Lock Solver Gothic jest przeznaczony do zagadek, w których kilka przesuwanych lub obracanych płytek reaguje na jeden ruch. Solver pomaga wtedy, gdy zamek nie działa jak prosty mechanizm jedna płytka po drugiej: poruszenie jednej płytki może pchnąć inną w tym samym kierunku, przesunąć ją przeciwnie albo nie zmienić jej położenia.",
+        guideStep1Title: "1. Zapisz aktualne pozycje płytek",
+        guideStep1Body: "Traktuj każdy otwór lub nacięcie jako pozycję od 1 do 7. Zacznij od widocznego stanu w grze lub zagadce, a potem użyj przycisków plus i minus w środkowym panelu, aż każdy wiersz będzie zgodny z tym, co widzisz na ekranie.",
+        guideStep2Title: "2. Ustaw pozycję docelową",
+        guideStep2Body: "W wielu zamkach logicznych z Gothic celem jest pozycja środkowa, dlatego domyślnie wybrana jest pozycja 4. Jeśli zagadka wyraźnie wskazuje inny docelowy otwór, zmień cel przed liczeniem rozwiązania.",
+        guideStep3Title: "3. Opisz zależności między płytkami",
+        guideStep3Body: "Macierz zależności jest najważniejsza. Wiersz oznacza płytkę, którą poruszasz. Kolumna oznacza płytkę, która reaguje. Użyj +, gdy reagująca płytka idzie w tym samym kierunku, -, gdy idzie przeciwnie, oraz brak, gdy nie ma reakcji.",
+        guideStep4Title: "4. Odczytaj najkrótszą sekwencję",
+        guideStep4Body: "Po obliczeniu wynik pokazuje najkrótszą sekwencję znalezioną dla wpisanego modelu. Kliknij dowolny krok, żeby podejrzeć stan po tym ruchu i porównać go z prawdziwą zagadką przed kolejnym ruchem.",
+        exampleKicker: "Przykład",
+        exampleTitle: "Praktyczny sposób na rozpoznanie zależności bez zgadywania",
+        exampleTestTitle: "Testuj jedną płytkę naraz",
+        exampleStep1: "Zapisz początkowe pozycje wszystkich płytek.",
+        exampleStep2: "Przesuń tylko płytkę 1 o jeden krok w kierunku, który nazywasz +.",
+        exampleStep3: "Porównaj każdą pozostałą płytkę ze stanem początkowym.",
+        exampleStep4: "Wpisz +, - albo brak w pierwszym wierszu macierzy.",
+        exampleStep5: "Jeśli to możliwe, cofnij ruch, a potem powtórz proces dla następnej płytki.",
+        exampleWrongTitle: "Gdy wynik wygląda źle",
+        exampleWrongBody1: "Najczęściej błędny wynik bierze się z odwróconej konwencji kierunku. Jeśli zagadka używa przeciwnego kierunku wizualnego, nie potrzebujesz nowego algorytmu: odwróć znaczenie + i - w notatkach albo wykonuj przeciwne kierunki niż te z listy ruchów.",
+        exampleWrongBody2: "Jeśli solver zwraca brak rozwiązania, sprawdź ponownie pozycję docelową i upewnij się, że każda zależność była testowana od czystego stanu startowego.",
+        methodKicker: "Metoda",
+        methodTitle: "Jak solver szuka wyniku",
+        methodStateTitle: "Przeszukiwanie stanów",
+        methodStateBody: "Narzędzie zapisuje zamek jako zwarty stan: każda płytka ma pozycję, a każdy możliwy ruch stosuje reguły zależności z macierzy. Wyszukiwanie sprawdza osiągalne stany, aż znajdzie taki, w którym wszystkie płytki są na pozycji docelowej.",
+        methodShortestTitle: "Dlaczego pierwszy wynik jest krótki",
+        methodShortestBody: "Ruchy są sprawdzane według odległości od stanu początkowego. To znaczy, że pierwszy poprawny wynik jest najkrótszą sekwencją dla modelu wpisanego na stronie. Jeśli prawdziwa zagadka działa inaczej, trzeba poprawić macierz, a nie próbować losowych ruchów.",
+        aboutKicker: "Informacje o wydawcy",
+        aboutTitle: "O Lock Solver Gothic",
+        aboutPurposeTitle: "Cel",
+        aboutPurposeBody: "Ta strona jest niezależnym narzędziem i poradnikiem dla graczy, którzy chcą rozumować nad powiązanymi zamkami logicznymi zamiast próbować ruchów losowo.",
+        aboutEditorialTitle: "Podejście redakcyjne",
+        aboutEditorialBody: "Poradnik wyjaśnia model używany przez solver, typowe pomyłki oraz powtarzalny sposób zbierania danych z zagadki. Narzędzie nie wymaga konta i nie sprzedaje danych wpisywanych przez użytkowników.",
+        aboutContactTitle: "Kontakt",
+        aboutContactBody: "W sprawie poprawek, pytań o prywatność lub opinii o solverze skontaktuj się z wydawcą pod adresem",
+        privacyKicker: "Polityka prywatności",
+        privacyTitle: "Dane, cookies i informacje o reklamach",
+        privacyBody1: "Z Lock Solver Gothic można korzystać bez zakładania konta. Obliczenia solvera działają w przeglądarce. Strona może używać Google Analytics do analizy zagregowanego ruchu oraz Google AdSense do wyświetlania reklam, jeśli reklamy są włączone w wersji produkcyjnej.",
+        privacyBody2: "Google i jego partnerzy mogą używać plików cookie, sygnałów web beacon, adresów IP, identyfikatorów urządzeń i podobnych technologii do pomiaru, zapobiegania nadużyciom oraz wyświetlania lub personalizacji reklam. Informacje o tym, jak Google używa danych w witrynach partnerów, znajdziesz tutaj:",
+        privacyGooglePolicyLink: "polityka Google dotycząca witryn partnerów",
+        privacyBody3: "Możesz kontrolować cookies w ustawieniach przeglądarki oraz przez mechanizmy zgody widoczne na stronie. Nie wysyłaj wrażliwych danych osobowych w wiadomościach email.",
+        termsKicker: "Warunki",
+        termsTitle: "Korzystanie z darmowego narzędzia do zagadek",
+        termsBody1: "Solver jest udostępniony jako darmowe narzędzie do prywatnego rozwiązywania zagadek i celów edukacyjnych. Wyniki zależą od pozycji i reguł zależności wpisanych przez użytkownika, dlatego wydawca nie może zagwarantować, że każdy model odpowiada każdej grze lub implementacji zagadki.",
+        termsBody2: "Nie używaj strony w sposób, który zakłóca działanie usługi, próbuje manipulować reklamami albo narusza zasady gry, platformy lub wydawcy, do którego należy rozwiązywana zagadka.",
+        footerDescription: "Lock Solver Gothic - niezależny solver i poradnik do zagadek logicznych."
+      },
+      en: {
+        pageTitle: "Lock Solver Gothic - puzzle lock solver and guide",
+        pageDescription: "Lock Solver Gothic is an interactive puzzle solver with a practical guide for modelling linked plates, target positions, and shortest move sequences.",
+        navGuide: "Guide",
+        navExample: "Example",
+        navAbout: "About",
+        navPrivacy: "Privacy",
+        navTerms: "Terms",
+        navContact: "Contact",
+        guideKicker: "Puzzle guide",
+        guideTitle: "How to model a Gothic plate lock before pressing Solve",
+        guideLead: "Lock Solver Gothic is built for puzzles where several sliding or rotating plates react to one move. The solver is useful when the lock is not a simple one-plate-at-a-time mechanism: moving one plate can push another plate in the same direction, pull it in the opposite direction, or leave it unchanged.",
+        guideStep1Title: "1. Record the current plate positions",
+        guideStep1Body: "Treat every hole or notch as a numbered position from 1 to 7. Start with the visible state in the game or puzzle, then use the plus and minus controls in the middle panel until each row matches what you see on screen.",
+        guideStep2Title: "2. Set the target position",
+        guideStep2Body: "Many Gothic lock puzzles use the central position as the goal, so position 4 is selected by default. If your puzzle clearly highlights another target hole, change the target before solving.",
+        guideStep3Title: "3. Map plate dependencies",
+        guideStep3Body: "The relation matrix is the important part. A row means the plate you move. A column means the plate that reacts. Use + when the reacting plate follows the same direction, - when it moves the opposite way, and none when there is no reaction.",
+        guideStep4Title: "4. Read the shortest sequence",
+        guideStep4Body: "After solving, the result lists the shortest sequence found for the model you entered. Click any step to preview the state after that move and compare it with the actual puzzle before continuing.",
+        exampleKicker: "Worked example",
+        exampleTitle: "A practical way to identify relations without guessing",
+        exampleTestTitle: "Test one plate at a time",
+        exampleStep1: "Write down the starting positions of every plate.",
+        exampleStep2: "Move only plate 1 by one step in the direction you call +.",
+        exampleStep3: "Compare every other plate with the starting state.",
+        exampleStep4: "Enter +, -, or none in row 1 of the matrix.",
+        exampleStep5: "Undo the move if possible, then repeat the same process for the next plate.",
+        exampleWrongTitle: "When the answer looks wrong",
+        exampleWrongBody1: "Most wrong answers come from one reversed convention. If the puzzle uses the opposite visual direction, you do not need a new algorithm: either reverse the meaning of + and - in your notes, or use the opposite direction from each listed move.",
+        exampleWrongBody2: "If the solver reports no solution, re-check whether the target position is correct and whether every dependency was tested from a clean starting state.",
+        methodKicker: "Method",
+        methodTitle: "How the solver searches for a result",
+        methodStateTitle: "State-based search",
+        methodStateBody: "The tool represents the lock as a compact state: each plate has a position, and each possible move applies the dependency rules from the matrix. The search checks reachable states until it finds a state where every plate sits on the target position.",
+        methodShortestTitle: "Why the first result is short",
+        methodShortestBody: "Moves are explored by distance from the starting state. That means the first valid solution found is the shortest sequence for the model entered into the page. If the real puzzle behaves differently, the matrix needs correction rather than more random moves.",
+        aboutKicker: "Publisher information",
+        aboutTitle: "About Lock Solver Gothic",
+        aboutPurposeTitle: "Purpose",
+        aboutPurposeBody: "This page is an independent utility and guide for players who want to reason through linked lock puzzles instead of trying moves at random.",
+        aboutEditorialTitle: "Editorial approach",
+        aboutEditorialBody: "The guide explains the model used by the solver, common mistakes, and a repeatable way to collect puzzle data. The tool does not require an account and does not sell user submissions.",
+        aboutContactTitle: "Contact",
+        aboutContactBody: "For corrections, privacy questions, or feedback about the solver, contact the publisher at",
+        privacyKicker: "Privacy policy",
+        privacyTitle: "Data, cookies, and advertising disclosures",
+        privacyBody1: "Lock Solver Gothic can be used without creating an account. The solver calculations run in your browser. The page may use Google Analytics to understand aggregate usage and Google AdSense to display advertising if ads are enabled on the production site.",
+        privacyBody2: "Google and its partners may use cookies, web beacons, IP addresses, device identifiers, and similar technologies to provide measurement, prevent abuse, and serve or personalize ads. You can learn how Google uses data on partner sites at",
+        privacyGooglePolicyLink: "Google's partner sites policy",
+        privacyBody3: "You can control cookies in your browser settings and through any consent controls shown on the site. Do not send sensitive personal information through feedback email.",
+        termsKicker: "Terms",
+        termsTitle: "Use of this free puzzle tool",
+        termsBody1: "The solver is provided as a free utility for personal puzzle solving and educational use. Results depend on the positions and dependency rules entered by the user, so the publisher cannot guarantee that every model matches every game or puzzle implementation.",
+        termsBody2: "Do not use the page in a way that interferes with the service, attempts to manipulate advertising, or violates the rules of a game, platform, or publisher that owns the puzzle you are playing.",
+        footerDescription: "Lock Solver Gothic - independent puzzle solver and guide."
+      },
+      de: {
+        pageTitle: "Lock Solver Gothic - Schlossrätsel-Löser und Anleitung",
+        pageDescription: "Lock Solver Gothic ist ein interaktiver Löser mit Anleitung für verbundene Platten, Zielpositionen und kürzeste Zugfolgen.",
+        navGuide: "Anleitung",
+        navExample: "Beispiel",
+        navAbout: "Info",
+        navPrivacy: "Datenschutz",
+        navTerms: "Bedingungen",
+        navContact: "Kontakt",
+        guideKicker: "Rätsel-Anleitung",
+        guideTitle: "So modellierst du ein Gothic-Plattenschloss vor dem Lösen",
+        guideLead: "Lock Solver Gothic ist für Rätsel gedacht, bei denen mehrere schiebende oder drehende Platten auf einen Zug reagieren. Der Löser hilft, wenn das Schloss kein einfacher Mechanismus mit nur einer Platte pro Zug ist: Eine bewegte Platte kann eine andere in dieselbe Richtung schieben, in die Gegenrichtung ziehen oder unverändert lassen.",
+        guideStep1Title: "1. Aktuelle Plattenpositionen notieren",
+        guideStep1Body: "Behandle jedes Loch oder jede Kerbe als nummerierte Position von 1 bis 7. Beginne mit dem sichtbaren Zustand im Spiel oder Rätsel und nutze dann die Plus- und Minus-Tasten im mittleren Bereich, bis jede Zeile dem Bildschirm entspricht.",
+        guideStep2Title: "2. Zielposition festlegen",
+        guideStep2Body: "Viele Schlossrätsel in Gothic nutzen die mittlere Position als Ziel, deshalb ist Position 4 voreingestellt. Wenn dein Rätsel klar ein anderes Zielloch markiert, ändere das Ziel vor dem Lösen.",
+        guideStep3Title: "3. Abhängigkeiten der Platten abbilden",
+        guideStep3Body: "Die Abhängigkeitsmatrix ist der wichtigste Teil. Eine Zeile steht für die Platte, die du bewegst. Eine Spalte steht für die Platte, die reagiert. Nutze + für dieselbe Richtung, - für die Gegenrichtung und keine, wenn es keine Reaktion gibt.",
+        guideStep4Title: "4. Kürzeste Zugfolge lesen",
+        guideStep4Body: "Nach dem Lösen zeigt das Ergebnis die kürzeste gefundene Sequenz für dein Modell. Klicke einen Schritt an, um den Zustand nach diesem Zug zu prüfen und ihn mit dem echten Rätsel zu vergleichen.",
+        exampleKicker: "Beispiel",
+        exampleTitle: "Eine praktische Methode, Abhängigkeiten ohne Raten zu erkennen",
+        exampleTestTitle: "Teste immer nur eine Platte",
+        exampleStep1: "Notiere die Startpositionen aller Platten.",
+        exampleStep2: "Bewege nur Platte 1 um einen Schritt in die Richtung, die du + nennst.",
+        exampleStep3: "Vergleiche jede andere Platte mit dem Startzustand.",
+        exampleStep4: "Trage +, - oder keine in Zeile 1 der Matrix ein.",
+        exampleStep5: "Mache den Zug nach Möglichkeit rückgängig und wiederhole den Prozess für die nächste Platte.",
+        exampleWrongTitle: "Wenn das Ergebnis falsch aussieht",
+        exampleWrongBody1: "Die meisten falschen Antworten entstehen durch eine umgekehrte Richtungskonvention. Wenn das Rätsel visuell die Gegenrichtung nutzt, brauchst du keinen neuen Algorithmus: Kehre + und - in deinen Notizen um oder nutze die Gegenrichtung zu jedem gelisteten Zug.",
+        exampleWrongBody2: "Wenn der Löser keine Lösung meldet, prüfe die Zielposition erneut und stelle sicher, dass jede Abhängigkeit aus einem sauberen Startzustand getestet wurde.",
+        methodKicker: "Methode",
+        methodTitle: "Wie der Löser ein Ergebnis sucht",
+        methodStateTitle: "Zustandssuche",
+        methodStateBody: "Das Werkzeug beschreibt das Schloss als kompakten Zustand: Jede Platte hat eine Position, und jeder mögliche Zug wendet die Abhängigkeitsregeln aus der Matrix an. Die Suche prüft erreichbare Zustände, bis alle Platten auf der Zielposition liegen.",
+        methodShortestTitle: "Warum das erste Ergebnis kurz ist",
+        methodShortestBody: "Züge werden nach Abstand vom Startzustand geprüft. Deshalb ist die erste gültige Lösung die kürzeste Sequenz für das eingegebene Modell. Wenn das echte Rätsel anders reagiert, muss die Matrix korrigiert werden, nicht die Zugfolge geraten.",
+        aboutKicker: "Publisher-Informationen",
+        aboutTitle: "Über Lock Solver Gothic",
+        aboutPurposeTitle: "Zweck",
+        aboutPurposeBody: "Diese Seite ist ein unabhängiges Werkzeug und eine Anleitung für Spieler, die verbundene Schlossrätsel logisch lösen möchten, statt zufällige Züge zu probieren.",
+        aboutEditorialTitle: "Redaktioneller Ansatz",
+        aboutEditorialBody: "Die Anleitung erklärt das Modell des Lösers, typische Fehler und eine wiederholbare Methode zum Sammeln von Rätseldaten. Das Werkzeug erfordert kein Konto und verkauft keine Nutzereingaben.",
+        aboutContactTitle: "Kontakt",
+        aboutContactBody: "Für Korrekturen, Datenschutzfragen oder Feedback zum Löser kontaktiere den Publisher unter",
+        privacyKicker: "Datenschutzerklärung",
+        privacyTitle: "Daten, Cookies und Werbehinweise",
+        privacyBody1: "Lock Solver Gothic kann ohne Konto genutzt werden. Die Berechnungen laufen in deinem Browser. Die Seite kann Google Analytics zur aggregierten Nutzungsmessung und Google AdSense zur Anzeige von Werbung verwenden, wenn Anzeigen auf der Produktionsseite aktiviert sind.",
+        privacyBody2: "Google und seine Partner können Cookies, Web-Beacons, IP-Adressen, Gerätekennungen und ähnliche Technologien für Messung, Missbrauchsschutz sowie Anzeige oder Personalisierung von Werbung verwenden. Wie Google Daten auf Partnerseiten nutzt, erfährst du hier:",
+        privacyGooglePolicyLink: "Googles Richtlinie für Partnerseiten",
+        privacyBody3: "Du kannst Cookies in den Browsereinstellungen und über angezeigte Einwilligungsfunktionen kontrollieren. Sende keine sensiblen personenbezogenen Daten per Feedback-E-Mail.",
+        termsKicker: "Bedingungen",
+        termsTitle: "Nutzung dieses kostenlosen Rätselwerkzeugs",
+        termsBody1: "Der Löser wird als kostenloses Werkzeug für private Rätsellösung und Bildungszwecke bereitgestellt. Ergebnisse hängen von den eingegebenen Positionen und Abhängigkeitsregeln ab, daher kann der Publisher nicht garantieren, dass jedes Modell jeder Spiel- oder Rätselimplementierung entspricht.",
+        termsBody2: "Nutze die Seite nicht auf eine Weise, die den Dienst stört, Werbung manipuliert oder gegen Regeln eines Spiels, einer Plattform oder eines Publishers verstößt, zu dem das Rätsel gehört.",
+        footerDescription: "Lock Solver Gothic - unabhängiger Schlossrätsel-Löser und Anleitung."
+      },
+      ru: {
+        pageTitle: "Lock Solver Gothic - решатель замков и руководство",
+        pageDescription: "Lock Solver Gothic - интерактивный решатель и руководство для связанных пластин, целевых позиций и кратчайших последовательностей ходов.",
+        navGuide: "Руководство",
+        navExample: "Пример",
+        navAbout: "О сайте",
+        navPrivacy: "Приватность",
+        navTerms: "Условия",
+        navContact: "Контакт",
+        guideKicker: "Руководство",
+        guideTitle: "Как описать замок с пластинами из Gothic перед нажатием Решить",
+        guideLead: "Lock Solver Gothic создан для головоломок, где несколько сдвигающихся или вращающихся пластин реагируют на один ход. Решатель полезен, когда замок не является простым механизмом с одной пластиной за раз: движение одной пластины может толкнуть другую в том же направлении, потянуть в противоположном или не изменить ее положение.",
+        guideStep1Title: "1. Запишите текущие позиции пластин",
+        guideStep1Body: "Считайте каждое отверстие или вырез позицией от 1 до 7. Начните с видимого состояния в игре или головоломке, затем используйте кнопки плюс и минус в средней панели, пока каждая строка не совпадет с тем, что видно на экране.",
+        guideStep2Title: "2. Установите целевую позицию",
+        guideStep2Body: "Во многих замках из Gothic целью является центральная позиция, поэтому по умолчанию выбрана позиция 4. Если головоломка явно указывает другое целевое отверстие, измените цель перед расчетом.",
+        guideStep3Title: "3. Задайте зависимости пластин",
+        guideStep3Body: "Матрица зависимостей - самая важная часть. Строка означает пластину, которую вы двигаете. Столбец означает пластину, которая реагирует. Используйте +, если реагирующая пластина идет в том же направлении, -, если в противоположном, и нет, если реакции нет.",
+        guideStep4Title: "4. Прочитайте кратчайшую последовательность",
+        guideStep4Body: "После расчета результат показывает кратчайшую последовательность для введенной модели. Нажмите любой шаг, чтобы увидеть состояние после этого хода и сравнить его с реальной головоломкой.",
+        exampleKicker: "Пример",
+        exampleTitle: "Практический способ определить зависимости без угадывания",
+        exampleTestTitle: "Проверяйте по одной пластине",
+        exampleStep1: "Запишите стартовые позиции всех пластин.",
+        exampleStep2: "Сдвиньте только пластину 1 на один шаг в направлении, которое вы называете +.",
+        exampleStep3: "Сравните все остальные пластины со стартовым состоянием.",
+        exampleStep4: "Введите +, - или нет в строке 1 матрицы.",
+        exampleStep5: "Если возможно, отмените ход, затем повторите процесс для следующей пластины.",
+        exampleWrongTitle: "Если ответ выглядит неверным",
+        exampleWrongBody1: "Чаще всего неверный ответ возникает из-за обратного соглашения о направлении. Если головоломка визуально использует противоположное направление, новый алгоритм не нужен: поменяйте значения + и - в заметках или используйте противоположное направление для каждого хода из списка.",
+        exampleWrongBody2: "Если решатель сообщает, что решения нет, проверьте целевую позицию и убедитесь, что каждая зависимость проверялась из чистого стартового состояния.",
+        methodKicker: "Метод",
+        methodTitle: "Как решатель ищет результат",
+        methodStateTitle: "Поиск по состояниям",
+        methodStateBody: "Инструмент представляет замок как компактное состояние: у каждой пластины есть позиция, а каждый возможный ход применяет правила зависимостей из матрицы. Поиск проверяет достижимые состояния, пока не найдет такое, где все пластины стоят на целевой позиции.",
+        methodShortestTitle: "Почему первый результат короткий",
+        methodShortestBody: "Ходы проверяются по расстоянию от стартового состояния. Поэтому первое найденное правильное решение является кратчайшей последовательностью для модели, введенной на странице. Если реальная головоломка ведет себя иначе, нужно исправить матрицу, а не подбирать случайные ходы.",
+        aboutKicker: "Информация об издателе",
+        aboutTitle: "О Lock Solver Gothic",
+        aboutPurposeTitle: "Назначение",
+        aboutPurposeBody: "Эта страница - независимый инструмент и руководство для игроков, которые хотят логически решать связанные замковые головоломки вместо случайного перебора ходов.",
+        aboutEditorialTitle: "Редакционный подход",
+        aboutEditorialBody: "Руководство объясняет модель решателя, типичные ошибки и повторяемый способ сбора данных головоломки. Инструмент не требует аккаунта и не продает пользовательские вводы.",
+        aboutContactTitle: "Контакт",
+        aboutContactBody: "По вопросам исправлений, приватности или отзывов о решателе свяжитесь с издателем по адресу",
+        privacyKicker: "Политика приватности",
+        privacyTitle: "Данные, cookies и раскрытие информации о рекламе",
+        privacyBody1: "Lock Solver Gothic можно использовать без аккаунта. Расчеты решателя выполняются в вашем браузере. Страница может использовать Google Analytics для агрегированной статистики и Google AdSense для показа рекламы, если реклама включена на рабочем сайте.",
+        privacyBody2: "Google и его партнеры могут использовать cookies, web beacon, IP-адреса, идентификаторы устройств и похожие технологии для измерения, предотвращения злоупотреблений, показа или персонализации рекламы. О том, как Google использует данные на сайтах партнеров, можно узнать здесь:",
+        privacyGooglePolicyLink: "политика Google для сайтов партнеров",
+        privacyBody3: "Вы можете управлять cookies в настройках браузера и через элементы согласия, показанные на сайте. Не отправляйте конфиденциальные персональные данные по email.",
+        termsKicker: "Условия",
+        termsTitle: "Использование этого бесплатного инструмента",
+        termsBody1: "Решатель предоставляется как бесплатный инструмент для личного решения головоломок и обучения. Результаты зависят от позиций и правил зависимостей, введенных пользователем, поэтому издатель не может гарантировать, что каждая модель соответствует каждой игре или реализации головоломки.",
+        termsBody2: "Не используйте страницу способом, который мешает работе сервиса, пытается манипулировать рекламой или нарушает правила игры, платформы либо издателя, которому принадлежит головоломка.",
+        footerDescription: "Lock Solver Gothic - независимый решатель замковых головоломок и руководство."
+      }
+    };
+
     function detectLanguage() {
       try {
         const saved = localStorage.getItem("lockSolverLanguage");
@@ -1038,7 +1671,8 @@
 
     function t(key, vars = {}) {
       const dictionary = translations[currentLang] || translations.en;
-      const template = dictionary[key] || translations.en[key] || key;
+      const contentDictionary = contentTranslations[currentLang] || contentTranslations.en;
+      const template = dictionary[key] || contentDictionary[key] || translations.en[key] || contentTranslations.en[key] || key;
       return template.replace(/\{(\w+)\}/g, (_, name) => vars[name] ?? "");
     }
 
@@ -1468,8 +2102,18 @@
       });
     }
 
+    function translatePageMetadata() {
+      const title = t("pageTitle");
+      const description = t("pageDescription");
+      document.title = title;
+      document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+      document.querySelector('meta[property="og:title"]')?.setAttribute("content", title);
+      document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
+    }
+
     function translateStatic() {
       document.documentElement.lang = currentLang;
+      translatePageMetadata();
       document.querySelectorAll("[data-i18n]").forEach((element) => {
         element.textContent = t(element.dataset.i18n);
       });
