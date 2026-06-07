@@ -757,7 +757,7 @@
             </ol>
           </div>
           <aside class="self-promo" aria-label="Advertisement">
-            <a class="self-promo-link" href="https://play.google.com/store/apps/details?id=com.BlueberryBasement.MeetingMayhem" target="_blank" rel="noopener">
+            <a id="promoLink" class="self-promo-link" href="https://play.google.com/store/apps/details?id=com.BlueberryBasement.MeetingMayhem" target="_blank" rel="noopener">
               <img src="assets/meeting-mayhem-google-play.jpg" alt="Meeting Mayhem on Google Play" loading="lazy">
               <span class="self-promo-copy">
                 <span class="self-promo-kicker" data-i18n="promoKicker">From the developer</span>
@@ -1068,7 +1068,8 @@
       copyStatus: document.getElementById("copyStatus"),
       summary: document.getElementById("summary"),
       positionText: document.getElementById("positionText"),
-      languageSwitch: document.getElementById("languageSwitch")
+      languageSwitch: document.getElementById("languageSwitch"),
+      promoLink: document.getElementById("promoLink")
     };
 
     function createEffects(tileCount) {
@@ -1587,6 +1588,22 @@
       }
     }
 
+    function trackPromoClick() {
+      try {
+        if (typeof window.gtag !== "function") {
+          return;
+        }
+
+        window.gtag("event", "promo_click", {
+          promo_name: "meeting_mayhem",
+          destination: "google_play",
+          language: currentLang
+        });
+      } catch {
+        // Analytics must not affect the promo link.
+      }
+    }
+
     function render() {
       translateStatic();
       renderTileCountButtons();
@@ -1659,6 +1676,8 @@
           els.copyStatus.textContent = t("copyFailed");
         }
       });
+
+      els.promoLink.addEventListener("click", trackPromoClick);
 
       els.languageSwitch.querySelectorAll("[data-lang]").forEach((button) => {
         button.addEventListener("click", () => setLanguage(button.dataset.lang));
