@@ -587,6 +587,16 @@
       font-weight: 700;
     }
 
+    .batch-count {
+      min-width: 30px;
+      color: var(--accent);
+      font-weight: 850;
+    }
+
+    .steps li.active .batch-count {
+      color: #12352f;
+    }
+
     .pill {
       display: inline-grid;
       place-items: center;
@@ -1764,18 +1774,44 @@
       renderMatrix();
     }
 
+    function buildMoveVectors() {
+      const vectors = [];
+      for (let tile = 0; tile < state.tileCount; tile += 1) {
+        const base = Array(state.tileCount).fill(0);
+        base[tile] = 1;
+        state.effects[tile].forEach((relation, target) => {
+          if (relation !== 0) {
+            base[target] += relation;
+          }
+        });
+
+        vectors.push(
+          { tile, direction: -1, deltas: base.map((delta) => -delta), orderIndex: vectors.length },
+          { tile, direction: 1, deltas: base, orderIndex: vectors.length + 1 }
+        );
+      }
+      return vectors;
+    }
+
+    function buildActionOrders(actions) {
+      const orders = [actions];
+      for (const previousAction of actions) {
+        orders[previousAction.orderIndex + 1] = [previousAction]
+          .concat(actions.filter((action) => action.tile === previousAction.tile && action !== previousAction))
+          .concat(actions.filter((action) => action.tile !== previousAction.tile));
+      }
+      return orders;
+    }
+
     function applyAction(currentState, action) {
       const next = [...currentState];
-      const deltas = new Map([[action.tile, action.direction]]);
 
-      state.effects[action.tile].forEach((relation, target) => {
-        if (relation === 0) {
-          return;
+      for (let tile = 0; tile < action.deltas.length; tile += 1) {
+        const delta = action.deltas[tile];
+        if (delta === 0) {
+          continue;
         }
-        deltas.set(target, (deltas.get(target) || 0) + action.direction * relation);
-      });
 
-      for (const [tile, delta] of deltas.entries()) {
         const normalized = normalizePosition(next[tile] + delta);
         if (normalized === null) {
           return null;
@@ -1796,19 +1832,19 @@
     async function solvePuzzle() {
       const start = [...state.positions];
       const goal = Array(state.tileCount).fill(state.target);
-      if (keyOf(start) === keyOf(goal)) {
+      const startKey = keyOf(start);
+      const goalKey = keyOf(goal);
+      if (startKey === goalKey) {
         return [];
       }
 
-      const actions = [];
-      for (let tile = 0; tile < state.tileCount; tile += 1) {
-        actions.push({ tile, direction: -1 }, { tile, direction: 1 });
-      }
+      const actions = buildMoveVectors();
+      const actionOrders = buildActionOrders(actions);
 
-      const queue = [start];
+      const queue = [{ values: start, key: startKey, lastActionIndex: null }];
       let readIndex = 0;
       const previous = new Map();
-      previous.set(keyOf(start), { parent: null, action: null, state: start });
+      previous.set(startKey, { parent: null, action: null, state: start });
 
       while (readIndex < queue.length) {
         const current = queue[readIndex];
@@ -1818,8 +1854,8 @@
           await yieldToBrowser();
         }
 
-        for (const action of actions) {
-          const candidate = applyAction(current, action);
+        for (const action of actionOrders[current.lastActionIndex === null ? 0 : current.lastActionIndex + 1]) {
+          const candidate = applyAction(current.values, action);
           if (!candidate) {
             continue;
           }
@@ -1830,16 +1866,16 @@
           }
 
           previous.set(candidateKey, {
-            parent: keyOf(current),
+            parent: current.key,
             action,
             state: candidate
           });
 
-          if (candidateKey === keyOf(goal)) {
+          if (candidateKey === goalKey) {
             return reconstructSolution(candidateKey, previous);
           }
 
-          queue.push(candidate);
+          queue.push({ values: candidate, key: candidateKey, lastActionIndex: action.orderIndex });
         }
       }
 
@@ -1896,6 +1932,36 @@
       return t("tileAction", { tile: action.tile + 1, dir: direction, key: keyForAction(action) });
     }
 
+    function isSameMove(left, right) {
+      return left.tile === right.tile && left.direction === right.direction;
+    }
+
+    function buildActionBatches(actions) {
+      const batches = [];
+      actions.forEach((action, index) => {
+        const step = index + 1;
+        const previous = batches[batches.length - 1];
+        if (previous && isSameMove(previous.action, action)) {
+          previous.count += 1;
+          previous.endStep = step;
+          return;
+        }
+
+        batches.push({
+          action,
+          count: 1,
+          startStep: step,
+          endStep: step
+        });
+      });
+      return batches;
+    }
+
+    function describeBatch(batch) {
+      const action = describeAction(batch.action);
+      return batch.count === 1 ? action : `x${batch.count} ${action}`;
+    }
+
     function renderSolution(solution) {
       if (solution === null) {
         state.solutionStates = [];
@@ -1922,13 +1988,14 @@
       }
 
       const states = simulate(solution);
+      const batches = buildActionBatches(solution);
       state.solutionStates = states;
       state.solutionActions = [...solution];
       state.solutionMode = "solution";
       state.previewStep = null;
       renderTiles();
       renderSummary();
-      const stepText = solution.map((action, index) => `${index + 1}. ${describeAction(action)}`);
+      const stepText = batches.map((batch, index) => `${index + 1}. ${describeBatch(batch)}`);
       const stateText = states.map((values, index) => {
         const label = index === 0 ? t("start") : t("after", { step: index });
         return `${label}: ${values.join(",")}`;
@@ -1943,10 +2010,12 @@
         t("goal", { values: Array(state.tileCount).fill(state.target).join(",") })
       ].join("\n");
 
-      const steps = solution.map((action, index) => {
+      const steps = batches.map((batch) => {
+        const action = batch.action;
         const dir = action.direction > 0 ? "+1" : "-1";
         const key = keyForAction(action);
-        return `<li data-step-item="${index + 1}"><button class="step-preview" type="button" data-preview-step="${index + 1}"><span class="step-action"><span class="pill" style="${tileColorStyle(action.tile)}">P${action.tile + 1}</span><span>${dir}</span><span class="key-hint">${t("keyHint", { key })}</span></span></button></li>`;
+        const count = batch.count > 1 ? `<span class="batch-count">x${batch.count}</span>` : "";
+        return `<li data-step-item="${batch.endStep}"><button class="step-preview" type="button" data-preview-step="${batch.endStep}"><span class="step-action">${count}<span class="pill" style="${tileColorStyle(action.tile)}">P${action.tile + 1}</span><span>${dir}</span><span class="key-hint">${t("keyHint", { key })}</span></span></button></li>`;
       }).join("");
 
       const rows = states.map((values, index) => {
